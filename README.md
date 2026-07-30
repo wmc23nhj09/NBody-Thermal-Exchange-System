@@ -28,6 +28,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 ## TEST VALIDATIONS
 ### ADDED
 * Stefan-Boltzmann Single Step Deep Space Cooling
+  >**NOTE:** As Temperature increases, so too does the margin of error. This test only allows up to 1% error, and the multi-step simulation stability test will later decrease the margin of error to temperature ratio.
 
 ### TO ADD
 * Multi-step simulation stability
@@ -55,5 +56,4 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 ## KNOWN LIMITATIONS
 
 * Need to internally change and add objects in C++
-* Current Stefan-Boltzmann logic has not been verified yet
 * Objects do not obey conservation of energy when touching
