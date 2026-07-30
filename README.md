@@ -25,9 +25,14 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 * Basic UI system
 * etc.
 
-## FUTURE PROJECT GOALS
+## TEST VALIDATIONS
+# ADDED
+* Stefan-Boltzmann Single Step Deep Space Cooling
 
-* Add test folder of internal code and mathematical / physics logic
+# TO ADD
+* Multi-step simulation stability
+* Blackbody radiation -> RGB colour mapping validation
+* etc.
 
 ## REQUIREMENTS
 
