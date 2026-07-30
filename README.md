@@ -28,7 +28,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 ## TEST VALIDATIONS
 ### ADDED
 * Stefan-Boltzmann Single Step Deep Space Cooling
-  >**NOTE:** As Temperature increases, so too does the margin of error. This test only allows up to 1% error, and the multi-step simulation stability test will later decrease the margin of error to temperature ratio.
+  >**NOTE:** As temperature increases, the margin of error increases due to the non-linear `(T^4)` relationship in Stefan-Boltzmann radiation. This test allows up to 1% error for single-step calculations. A future multi-step simulation stability test will verify accuracy using smaller timesteps and improve high-temperature accuracy.
 
 ### TO ADD
 * Multi-step simulation stability
@@ -51,7 +51,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
    
 >**Note:** The SDL3 Development Kit is designed to be reused across multiple SDL3 projects. The project configuration should only require updating the SDL3 paths to match the user's local installation. This repository assumes basic knowledge of Visual Studio C++ project configuration. Users should configure their project include paths and linker settings to point to this development kit.
 
->**Contingency:** All of this project's own header files are already configured for the ease of building, only the [SDL3 Development Kit](https://github.com/wmc23nhj09/SDL3_Development_Kit)'s files need to be configured (Step 3). If the project's own header files are not able to be found, either add them to the project's local 'src' file, or link your relative path under both projects Additional Include Directories configuration settings.
+>**Contingency:** All of this project's own header files are already configured for the ease of building, only the [SDL3 Development Kit](https://github.com/wmc23nhj09/SDL3_Development_Kit)'s files need to be configured (Step 3). If the project's own header files are not able to be found, either add them to the project's local `src` file, or link your relative path under both projects Additional Include Directories configuration settings.
 
 ## KNOWN LIMITATIONS
 
