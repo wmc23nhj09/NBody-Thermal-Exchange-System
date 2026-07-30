@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="HeatTransferProjectRED/HeatTransferProjectRED.vcxproj" Id="125f9089-a312-49f8-9576-f30b2dd57561" />
+  <Project Path="HeatTransferProjectTESTS/HeatTransferProjectTESTS.vcxproj" Id="4d87b345-d444-4715-8751-f4ac35f189ca" />
+</Solution>
