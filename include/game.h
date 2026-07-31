@@ -18,6 +18,7 @@ private:
 	Window window;
 	Render renderer;
 	std::vector<ThermalBlocks> blocksinuse;
+	std::vector<float> tempsToadd;
 	float distanceoffsetx;
 	float distanceoffsety;
 	SDL_Event e;

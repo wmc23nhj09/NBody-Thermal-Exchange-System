@@ -5,6 +5,7 @@
 #include "iostream"
 #include "windows.h"
 #include "renderer.h"
+#include <iomanip>
 
 //Main Game Class
 	//Initliasation when Class runs (__init__) --> In CPP it is referred to as a CONSTRUCTOR CLASS
@@ -12,8 +13,11 @@ Game::Game() : running(true),
 	window(),
 	renderer(window.renderer),
 				 //PHYSICS							 //RENDERING											 //INTERACTION
-				 //Temp      A   D   Mass E  SHE   K||        RECT						 RGB				 || Held   Down
-	blocksinuse({ { {18000, 0.5, 25, 190, 1, 5000, 0.0f}, { {10, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} } }),
+				 //Temp      A   D   Mass, E  SHE   K||        RECT						 RGB				 || Held   Down
+	blocksinuse({ { {1200,   1,25, 1, 5, 900, 0.0f}, { {10, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
+				{   {500,    1,25, 1, 2, 500, 0.0f}, { {50, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
+				{   {100,    1,25, 1, 3, 700, 0.0f}, { {30, 50, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} } }),
+	tempsToadd{},
 	distanceoffsetx(-1.0f),
 	distanceoffsety(-1.0f),
 	e{},
@@ -26,7 +30,7 @@ Game::Game() : running(true),
 	Simdt(),
 	sigma(5.67e-8),
 	emissivety(1),
-	transferspeed(1),
+	transferspeed(1e3),
 	framesbefore(),
 	framesnow()
 {
@@ -73,9 +77,36 @@ void Game::physicsbackground() {
 
 	physicswork.getCoolingConstant(sigma, blocksinuse);
 	physicswork.DeepSpaceHeatTransfer(&blocksinuse, Simdt, transferspeed, sigma, emissivety);
-	physicswork.AddToTemp(&blocksinuse, Simdt, transferspeed, sigma);
+	
+	float beforeenergy = 0;
+	float afterenergy = 0;
+	tempsToadd.assign(blocksinuse.size(), 0.0f);
 
-	for (auto b = blocksinuse.begin(); b != blocksinuse.end(); b++) {
-		physicswork.GetRGB(&(*b));
+	for (size_t i = 0; i < blocksinuse.size(); i++) {
+		beforeenergy += (blocksinuse[i].physics.specific_heat_energy * blocksinuse[i].physics.mass * blocksinuse[i].physics.temp);
 	}
+
+	for (size_t i = 0; i < blocksinuse.size(); i++) {
+		for (size_t j = i + 1; j < blocksinuse.size(); j++) {
+			if (blockrender.getTouchingIndexes(blocksinuse[i], blocksinuse[j])) {
+				physicswork.AddConduction(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeed, tempsToadd, blockrender);
+			}
+			else {
+				physicswork.AddRadiation(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeed, sigma, tempsToadd, blockrender);
+			}
+		}
+	}
+
+	for (size_t i = 0; i < tempsToadd.size(); i++) {
+
+		blocksinuse[i].physics.temp += tempsToadd[i];
+		physicswork.GetRGB(&blocksinuse[i]);
+	}
+
+	
+
+	for (size_t i = 0; i < blocksinuse.size(); i++) {
+		afterenergy += (blocksinuse[i].physics.specific_heat_energy * blocksinuse[i].physics.mass * blocksinuse[i].physics.temp);
+	}
+
 }
