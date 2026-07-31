@@ -11,6 +11,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 
 * Blackbody radiation colour mapping
 * Temperature loss to deep space using Stefan-Boltzmann's law
+* Temperature Equilibrium between objects at a distance due to radiation
 * Draggable objects
 
 ## IN DEVELOPMENT FEATURES
