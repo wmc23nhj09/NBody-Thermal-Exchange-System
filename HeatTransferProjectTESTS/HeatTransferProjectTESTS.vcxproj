@@ -21,7 +21,13 @@
   <ItemGroup>
     <ClCompile Include="..\src\blocks.cpp" />
     <ClCompile Include="..\src\physics.cpp" />
-    <ClCompile Include="StefanBoltzmann_SingleStep_DeepSpaceCooling.cpp" />
+    <ClCompile Include="M-O_R_E_Energy_Conservation.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="tests\StefanBoltzmann_SingleStep_DeepSpaceCooling.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="M-O_R_E_Energy_Conservation.h" />
+    <ClInclude Include="StefanBoltzmann_SingleStep_DeepSpaceCooling.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

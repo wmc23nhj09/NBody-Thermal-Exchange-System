@@ -1,6 +1,7 @@
 #include "physics.h"
 #include <SDL3/SDL.h>
 #include "vector"
+#include <iomanip>
 #include "iostream"
 #include "algorithm"
 
@@ -51,6 +52,12 @@ void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& Blo
 	float radiationpower = radiationCoefficient / (distanceSquared);
 	float Q = radiationpower * dt * transferspeed;
 
+	double deltaA = radiationpower /
+		(BlockA.physics.mass * BlockA.physics.specific_heat_energy);
+
+	double deltaB = radiationpower /
+		(BlockB.physics.mass * BlockB.physics.specific_heat_energy);
+
 	if (BlockA.physics.temp > BlockB.physics.temp) {
 		tempsToadd[ba] -= Q / (BlockA.physics.mass * BlockA.physics.specific_heat_energy);
 		tempsToadd[bb] += Q / (BlockB.physics.mass * BlockB.physics.specific_heat_energy);
@@ -59,6 +66,9 @@ void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& Blo
 		tempsToadd[ba] -= Q / (BlockA.physics.mass * BlockA.physics.specific_heat_energy);
 		tempsToadd[bb] += Q / (BlockB.physics.mass * BlockB.physics.specific_heat_energy);
 	}
+
+	tempsToadd[ba] -= deltaA;
+	tempsToadd[bb] += deltaB;
 }
 
 void Physics::GetRGB(ThermalBlocks* block) {

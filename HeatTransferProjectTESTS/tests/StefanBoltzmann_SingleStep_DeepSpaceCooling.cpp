@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-int main() {
+void SB_DSP_Run() {
 	std::vector<float> initialtemp = {100, 450, 900};
 	float sigma = 5.670374419e-8;
 	Physics physics;
