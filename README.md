@@ -12,7 +12,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 * Blackbody radiation colour mapping
 * Temperature loss to deep space using Stefan-Boltzmann's law
 * Temperature Equilibrium between objects at a distance due to radiation
-* Obey Conservation of energy at a distance
+* Obey Conservation of energy at a distance *
 * Draggable objects
 
 ## IN DEVELOPMENT FEATURES
@@ -59,3 +59,4 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 
 * Need to internally change and add objects in C++
 * Objects do not obey conservation of energy when touching
+* Temperatures end up overflowing as objects starting temps rise, limit unknown yet
