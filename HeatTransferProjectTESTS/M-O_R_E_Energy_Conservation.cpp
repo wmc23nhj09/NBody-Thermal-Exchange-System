@@ -15,7 +15,7 @@ void MORE_EC_Run()
     Physics physics;
     BlockManager blockrender;
 
-    float dt = 1.0f/120.0f;
+    float dt = 1.0f/1200.0f;
     float transferspeed = 1e3;
     float sigma = 5.670374419e-8f;
 
@@ -78,8 +78,8 @@ void MORE_EC_Run()
         }
 
         // Check equilibrium
-        float minT = blocksinuse[0].physics.temp;
-        float maxT = blocksinuse[0].physics.temp;
+        double minT = blocksinuse[blocksinuse.size()-1].physics.temp;
+        double maxT = blocksinuse[0].physics.temp;
 
         for (auto& b : blocksinuse)
         {
@@ -94,9 +94,9 @@ void MORE_EC_Run()
             totalTemperatureChange += fabs(delta);
         }
 
-        float maxTemperatureDifference = maxT - minT;
-
-        equilibriumReached = maxTemperatureDifference < 0.05f && totalTemperatureChange < 0.0001f;
+        float maxTemperatureDifference = abs(maxT - minT);
+        //std::cout << maxTemperatureDifference << '\n';
+        equilibriumReached = maxTemperatureDifference < 0.00001f && totalTemperatureChange < 0.0001f;
         ++steps;
     }
 
@@ -113,7 +113,7 @@ void MORE_EC_Run()
 
     double energyDifference = afterenergy - beforeenergy;
     double percentageError =
-        std::abs(energyDifference) / beforeenergy * 100.0;
+        (std::abs(energyDifference) / beforeenergy) * 100.0;
 
     std::cout << std::fixed << std::setprecision(10);
 

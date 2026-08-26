@@ -2,6 +2,6 @@
 #include "StefanBoltzmann_SingleStep_DeepSpaceCooling.h"
 
 int main() {
-	//SB_DSP_Run();
-	MORE_EC_Run();
+	SB_DSP_Run();
+	//MORE_EC_Run();
 }

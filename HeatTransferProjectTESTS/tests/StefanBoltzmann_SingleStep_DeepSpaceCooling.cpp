@@ -4,18 +4,18 @@
 #include <vector>
 
 void SB_DSP_Run() {
-	std::vector<float> initialtemp = {100, 450, 900};
+	std::vector<double> initialtemp = {100, 450, 900};
 	float sigma = 5.670374419e-8;
 	Physics physics;
 	int SimSpeed = 100;
 	float transferspeed = 1;
 	float dt = 1;
 
-	float ExpectedTempChange;
-	float ActualTempChange;
+	double ExpectedTempChange;
+	double ActualTempChange;
 	int count = 0;
 
-	float errorPercentage;
+	double errorPercentage;
 
 	float acceptableErrorMargin = 1.0f;
 

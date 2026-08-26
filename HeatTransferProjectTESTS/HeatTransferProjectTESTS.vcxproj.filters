@@ -21,13 +21,13 @@
     <ClCompile Include="M-O_R_E_Energy_Conservation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\physics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="tests\StefanBoltzmann_SingleStep_DeepSpaceCooling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
