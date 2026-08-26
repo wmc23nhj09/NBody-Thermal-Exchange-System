@@ -3,9 +3,10 @@
 #include "blocks.h"
 #include "physics.h"
 #include "iostream"
-#include "windows.h"
+#include <conio.h>
 #include "renderer.h"
-#include <iomanip>
+
+//MAX TEMP : 1.89 x 10 ^ 9
 
 //Main Game Class
 	//Initliasation when Class runs (__init__) --> In CPP it is referred to as a CONSTRUCTOR CLASS
@@ -13,10 +14,11 @@ Game::Game() : running(true),
 	window(),
 	renderer(window.renderer),
 				 //PHYSICS							 //RENDERING											 //INTERACTION
-				 //Temp      A   D   Mass, E  SHE   K||        RECT						 RGB				 || Held   Down
-	blocksinuse({ { {1200,   1,25, 1, 5, 900, 0.0f}, { {10, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
-				{   {500,    1,25, 1, 2, 500, 0.0f}, { {50, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
-				{   {100,    1,25, 1, 3, 700, 0.0f}, { {30, 50, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} } }),
+				 //Temp      A   D   Mass, E  SHE   K  KC||        RECT						 RGB				 || Held   Down
+	blocksinuse({ { {12000,   1, 25, 1, 1, 900, 0.0f, 400}, { {10, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
+				{   {509,     1, 25, 1, 1, 500, 0.0f, 400}, { {50, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
+				{   {1532,    1, 25, 1, 1, 300, 0.0f, 400}, { {90, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
+				{   {2,       1, 25, 1, 1, 500, 0.0f, 400},{ {30, 50, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} } }),
 	tempsToadd{},
 	distanceoffsetx(-1.0f),
 	distanceoffsety(-1.0f),
@@ -30,7 +32,7 @@ Game::Game() : running(true),
 	Simdt(),
 	sigma(5.67e-8),
 	emissivety(1),
-	transferspeed(1e3),
+	transferspeed(10.0f),
 	framesbefore(),
 	framesnow()
 {
@@ -42,7 +44,8 @@ void Game::run() {
 	while (running) {
 		framesnow = SDL_GetPerformanceCounter();
 
-		dt = (float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency();
+		dt = ((float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency())/10.0f;
+
 		Simdt = dt * SimSpeed;
 		framesbefore = framesnow;
 		mouseMap = SDL_GetMouseState(&mouse.x, &mouse.y);
@@ -76,7 +79,7 @@ void Game::run() {
 void Game::physicsbackground() {
 
 	physicswork.getCoolingConstant(sigma, blocksinuse);
-	physicswork.DeepSpaceHeatTransfer(&blocksinuse, Simdt, transferspeed, sigma, emissivety);
+	physicswork.DeepSpaceHeatTransfer(&blocksinuse, dt, transferspeed, sigma, emissivety);
 	
 	float beforeenergy = 0;
 	float afterenergy = 0;
@@ -98,11 +101,10 @@ void Game::physicsbackground() {
 	}
 
 	for (size_t i = 0; i < tempsToadd.size(); i++) {
-
 		blocksinuse[i].physics.temp += tempsToadd[i];
 		physicswork.GetRGB(&blocksinuse[i]);
+		std::cout << blocksinuse[i].physics.temp << '\n';
 	}
-
 	
 
 	for (size_t i = 0; i < blocksinuse.size(); i++) {

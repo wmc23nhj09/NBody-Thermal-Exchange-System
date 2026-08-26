@@ -1,0 +1,3 @@
+As Temperature increases, transferspeed must change dynamically to stop them from reaching the float overflow, without compromising the faster heat loss at higher temperatures.
+
+Heat loss to space is overpowering the rest of the simulation.

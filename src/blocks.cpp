@@ -7,7 +7,7 @@
 
 
 //Find the temperature difference between two objects
-float BlockManager::GetTempDif(float Tempa, float Tempb) {
+float BlockManager::GetTempDif(double Tempa, double Tempb) {
 	if (Tempa > Tempb) {
 		return Tempa - Tempb;
 	}
@@ -17,7 +17,7 @@ float BlockManager::GetTempDif(float Tempa, float Tempb) {
 }
 
 //Create a block - MUST FIX
-ThermalBlocks BlockManager::CreateBlock(float temp, SDL_FRect rect, float A, float d, double mass, float emissivety, float specific_heat_energy, float k) {
+ThermalBlocks BlockManager::CreateBlock(double temp, SDL_FRect rect, double A, double d, double mass, double emissivety, double specific_heat_energy, double k) {
 	ThermalBlocks block = { {temp, A, d, mass, emissivety, specific_heat_energy, k}, { rect, {0, 0, 0}}, {false, false} };
 	return block;
 }
