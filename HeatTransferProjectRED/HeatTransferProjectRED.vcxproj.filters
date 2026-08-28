@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Third-Party">
+      <UniqueIdentifier>{7f6e05eb-0f09-4e40-907c-1477f4d94ae7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\blocks.cpp">
@@ -32,6 +35,33 @@
     </ClCompile>
     <ClCompile Include="..\src\window.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Third-Party\imgui.cpp">
+      <Filter>Third-Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Third-Party\imgui_draw.cpp">
+      <Filter>Third-Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Third-Party\imgui_stdlib.cpp">
+      <Filter>Third-Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Third-Party\imgui_tables.cpp">
+      <Filter>Third-Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_widgets.cpp">
+      <Filter>Third-Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_impl_sdl3.cpp">
+      <Filter>Third-Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_impl_sdlrenderer3.cpp">
+      <Filter>Third-Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_stdlib.cpp">
+      <Filter>Third-Party</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

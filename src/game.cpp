@@ -2,29 +2,33 @@
 #include "game.h"
 #include "blocks.h"
 #include "physics.h"
+#include "imgui.h"
 #include "iostream"
-#include <conio.h>
+#include "imgui_impl_sdlrenderer3.h"
+#include "imgui_impl_sdl3.h"
 #include "renderer.h"
-
+#include "UI.h"
 //MAX TEMP : 1.89 x 10 ^ 9
 
+float temptry = 20000;
 //Main Game Class
 	//Initliasation when Class runs (__init__) --> In CPP it is referred to as a CONSTRUCTOR CLASS
 Game::Game() : running(true),
-	window(),
-	renderer(window.renderer),
-				 //PHYSICS							 //RENDERING											 //INTERACTION
-				 //Temp      A   D   Mass, E  SHE   K  KC||        RECT						 RGB				 || Held   Down
-	blocksinuse({ { {12000,   1, 25, 1, 1, 900, 0.0f, 400}, { {10, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
-				{   {509,     1, 25, 1, 1, 500, 0.0f, 400}, { {50, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
-				{   {1532,    1, 25, 1, 1, 300, 0.0f, 400}, { {90, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
-				{   {2,       1, 25, 1, 1, 500, 0.0f, 400},{ {30, 50, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} } }),
+window(),
+renderer(window.renderer),
+//PHYSICS							 //RENDERING											 //INTERACTION
+//Temp      A   D   Mass, E  SHE   K  KC||        RECT						 RGB				 || Held   Down
+blocksinuse({ { {1,   1, 25, 1, 1, 900, 0.0f, 400}, {{10, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false}},
+			{   {temptry,     1, 25, 1, 1, 500, 0.0f, 400}, { {50, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
+			{   {temptry,    1, 25, 1, 1, 300, 0.0f, 400}, { {90, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
+			{   {1,       1, 25, 1, 1, 500, 0.0f, 400},{ {30, 50, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} } }),
 	tempsToadd{},
 	distanceoffsetx(-1.0f),
 	distanceoffsety(-1.0f),
 	e{},
 	blockrender(),
 	physicswork(),
+	Ui(),
 	mouse({ 0,0,1,1 }),
 	mouseMap(),
 	dt(),
@@ -32,31 +36,69 @@ Game::Game() : running(true),
 	Simdt(),
 	sigma(5.67e-8),
 	emissivety(1),
-	transferspeed(10.0f),
+	transferspeed(1000.0f),
 	framesbefore(),
-	framesnow()
+	framesnow(),
+	CreationTemp(0),
+	CreationMass(0),
+	CreationEmissivety(0),
+	CreationSpecificHeatEnergy(0),
+	CreationDensity(0),
+	CreationKC(0),
+	Create(false),
+	Destroy(false)
 {
 };
 
 //Main Game Loop
 void Game::run() {
+	ImGuiWindowFlags window_flags = 0;
+
+	ImGui::CreateContext();
+	ImGui_ImplSDL3_InitForSDLRenderer(window.window, renderer.renderer);
+	ImGui_ImplSDLRenderer3_Init(renderer.renderer);
+
 	framesbefore = SDL_GetPerformanceCounter();
 	while (running) {
 		framesnow = SDL_GetPerformanceCounter();
 
-		dt = ((float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency())/10.0f;
+		dt = ((float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency()) / 100.0f;
 
 		Simdt = dt * SimSpeed;
 		framesbefore = framesnow;
 		mouseMap = SDL_GetMouseState(&mouse.x, &mouse.y);
 		while (SDL_PollEvent(&e)) {
-			if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_ESCAPE) {
+			ImGui_ImplSDL3_ProcessEvent(&e);
+
+			if ((e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_ESCAPE) || e.type == SDL_EVENT_QUIT) {
 				running = false;
 			}
 
 			if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
 				for (auto& b : blocksinuse) {
 					blockrender.getHeldState(mouse, &b);
+				}
+
+				if (Create) {
+					for (auto& b : blocksinuse) {
+						if (b.interaction.held) {
+							break;
+						}
+						else {
+							SDL_FRect tempRect = {mouse.x, mouse.y, 20, 20};
+							blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
+						}
+					}
+				}
+				else if (Destroy) {
+					int count = 0;
+					for (auto& b : blocksinuse) {
+
+						if (b.interaction.held) {
+							blocksinuse.erase(blocksinuse.begin() + count);
+						}
+						count++;
+					}
 				}
 			}
 
@@ -67,14 +109,38 @@ void Game::run() {
 				distanceoffsetx = -1.0f;
 				distanceoffsety = -1.0f;
 			}
+
+			if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_Q) {
+				Create = !Create;
+
+				if (Destroy) {
+					Destroy = false;
+				}
+			}
+
+			if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_E) {
+				Destroy = !Destroy;
+
+				if (Create) {
+					Create = false;
+				}
+			}
+
+			if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_F) {
+				Create = false;
+				Destroy = false;
+			}
 		}
 		for (auto& b : blocksinuse) {
 			blockrender.moveBlocks(&b, mouse, distanceoffsetx, distanceoffsety);
 		}
 		physicsbackground();
 		renderer.update(blocksinuse, mouse, blockrender);
+		Ui.SetFlags(window_flags);
+		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC);
+		SDL_RenderPresent(renderer.renderer);
 	}
-}
+};
 
 void Game::physicsbackground() {
 
@@ -103,7 +169,7 @@ void Game::physicsbackground() {
 	for (size_t i = 0; i < tempsToadd.size(); i++) {
 		blocksinuse[i].physics.temp += tempsToadd[i];
 		physicswork.GetRGB(&blocksinuse[i]);
-		std::cout << blocksinuse[i].physics.temp << '\n';
+		std::cout << blocksinuse[0].physics.temp << '\n';
 	}
 	
 

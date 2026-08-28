@@ -2,10 +2,10 @@
 
 Window::Window() {
 	SDL_CreateWindowAndRenderer(
-		"NBody Conductive And Radioactive Thermal Exchange",
+		"M.O.R.E. Model - Multi-Object Radiation Exchange",
 		WINDOW_W,
 		WINDOW_H,
-		SDL_WINDOW_BORDERLESS,
+		SDL_WINDOW_RESIZABLE,
 		&window,
 		&renderer);
 }

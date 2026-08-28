@@ -15,25 +15,22 @@ void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, float dt
 		double temp_fourthed = old_temp * old_temp * old_temp * old_temp;
 		double space4 = space_temp * space_temp * space_temp * space_temp;
 
-		if (dt == 0 or dt > 1) {
-			dt = 1.0f / 1200.0f;
-		}
 		double deltaTemp = ba->physics.k * (temp_fourthed - space4) * dt;
 
 		ba->physics.temp -= deltaTemp;
 	}
 }
 
-void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, float transferspeed, std::vector<float>& tempsToadd, BlockManager& blockUser) {
+void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, float transferspeed, std::vector<double>& tempsToadd, BlockManager& blockUser) {
 	
 	float TempDif = blockUser.GetTempDif(BlockA.physics.temp, BlockB.physics.temp);
 
 	float k = (BlockA.physics.kC + BlockB.physics.kC)/2;
 	float A = std::min(BlockA.physics.A, BlockB.physics.A);
 	float d = (BlockA.physics.d + BlockB.physics.d) / 2;
-				
+			
 	float heatRate = (k * A * TempDif) / d;
-	float Q = heatRate * dt * transferspeed*10;
+	float Q = heatRate * dt * transferspeed;
 
 	Q = abs(Q);
 
@@ -47,7 +44,7 @@ void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& Bl
 	}
 }
 
-void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, float transferspeed, float sigma, std::vector<float>& tempsToadd, BlockManager& blockUser) {
+void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, float transferspeed, double sigma, std::vector<double>& tempsToadd, BlockManager& blockUser) {
 	float EFF = sqrt(BlockA.physics.A * BlockB.physics.A);
 
 	float distanceSquared = pow(BlockA.render.rect.x - BlockB.render.rect.x, 2) + pow(BlockA.render.rect.y - BlockB.render.rect.y, 2);
@@ -56,6 +53,8 @@ void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& Blo
 		EFF *
 		(pow(BlockA.physics.temp, 4) - pow(BlockB.physics.temp, 4));
 
+	//radiationCoefficient = abs(radiationCoefficient);
+
 	if (distanceSquared < 1.0f){
 		distanceSquared = 1.0f;
 	}
@@ -63,11 +62,7 @@ void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& Blo
 	float Q = radiationpower * dt * transferspeed;
 
 	Q = abs(Q);
-	double deltaA = radiationpower /
-		(BlockA.physics.mass * BlockA.physics.specific_heat_energy);
 
-	double deltaB = radiationpower /
-		(BlockB.physics.mass * BlockB.physics.specific_heat_energy);
 
 	if (BlockA.physics.temp > BlockB.physics.temp) {
 		tempsToadd[ba] -= Q / (BlockA.physics.mass * BlockA.physics.specific_heat_energy);
@@ -77,9 +72,6 @@ void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& Blo
 		tempsToadd[ba] += Q / (BlockA.physics.mass * BlockA.physics.specific_heat_energy);
 		tempsToadd[bb] -= Q / (BlockB.physics.mass * BlockB.physics.specific_heat_energy);
 	}
-
-	tempsToadd[ba] -= deltaA;
-	tempsToadd[bb] += deltaB;
 }
 
 void Physics::GetRGB(ThermalBlocks* block) {

@@ -19,12 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_impl_sdl3.cpp" />
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_impl_sdlrenderer3.cpp" />
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_stdlib.cpp" />
+    <ClCompile Include="..\..\..\UI_DEVELOPMENT\CPP\imgui_widgets.cpp" />
     <ClCompile Include="..\src\blocks.cpp" />
     <ClCompile Include="..\src\game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\physics.cpp" />
     <ClCompile Include="..\src\renderer.cpp" />
+    <ClCompile Include="..\src\UI.cpp" />
     <ClCompile Include="..\src\window.cpp" />
+    <ClCompile Include="..\Third-Party\imgui.cpp" />
+    <ClCompile Include="..\Third-Party\imgui_draw.cpp" />
+    <ClCompile Include="..\Third-Party\imgui_stdlib.cpp" />
+    <ClCompile Include="..\Third-Party\imgui_tables.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
@@ -119,7 +128,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\wmc10\Desktop\Main Code Folder\Software\C++\SDL3\include;$(SolutionDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\wmc10\Desktop\Main Code Folder\Software\UI_DEVELOPMENT\include;C:\Users\wmc10\Desktop\Main Code Folder\Software\C++\SDL3\include;$(SolutionDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -13,5 +13,4 @@ void Render::update(std::vector<ThermalBlocks> blocksinuse, SDL_FRect mouse, Blo
 	}
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderFillRect(renderer, &mouse);
-	SDL_RenderPresent(renderer);
 }

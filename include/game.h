@@ -3,6 +3,7 @@
 #include "SDL3/SDL.h"
 #include "blocks.h"
 #include "physics.h"
+#include "UI.h"
 #include "window.h"
 #include "renderer.h"
 
@@ -18,20 +19,30 @@ private:
 	Window window;
 	Render renderer;
 	std::vector<ThermalBlocks> blocksinuse;
-	std::vector<float> tempsToadd;
+	std::vector<double> tempsToadd;
 	float distanceoffsetx;
 	float distanceoffsety;
 	SDL_Event e;
 	BlockManager blockrender;
 	Physics physicswork;
+	UI Ui;
 	SDL_FRect mouse;
 	Uint32 mouseMap;
-	float dt;
+	double dt;
 	float SimSpeed;
 	float Simdt;
 	float transferspeed;
-	const float sigma;
+	const double sigma;
 	int emissivety;
 	Uint64 framesbefore;
 	Uint64 framesnow;
+	float CreationTemp;
+	float CreationMass;
+	float CreationEmissivety;
+	float CreationSpecificHeatEnergy;
+	float CreationDensity;
+	float CreationKC;
+	bool Create;
+	bool Destroy;
+
 };
