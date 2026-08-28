@@ -14,6 +14,9 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 * Temperature Equilibrium between objects at a distance due to radiation
 * Obey Conservation of energy at a distance *
 * Draggable objects
+* Changeable mass and physics states of objects
+* Spawnable objects
+* Basic UI system
 
 ## IN DEVELOPMENT FEATURES
 
@@ -21,10 +24,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 
 ## FUTURE FEATURES
 
-* Changeable mass and physics states of objects
-* Spawnable objects
 * Barnes-Hutt Algorithm
-* Basic UI system
 * etc.
 
 ## TEST VALIDATIONS
@@ -48,8 +48,10 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 1. Create a new C++ project in Visual Studio 2022 (or newer).
 2. Download or clone the [SDL3 Development Kit](https://github.com/wmc23nhj09/SDL3_Development_Kit).
 3. Configure the project's Additional Include Directories, Library Directories, and Linker Dependencies using the paths provided by the SDL3 Development Kit.
-4. Copy SDL3.dll into the executable output directory (or build first, then place the DLL beside the executable).
-5. Build and run the project.
+4. Configure the projects Additional Include Directories to the `Third Party` Folder, then include.
+5. In Visual Studio, add the `Third Party` source code to src.
+6. Copy SDL3.dll into the executable output directory (or build first, then place the DLL beside the executable).
+7. Build and run the project.
    
 >**Note:** The SDL3 Development Kit is designed to be reused across multiple SDL3 projects. The project configuration should only require updating the SDL3 paths to match the user's local installation. This repository assumes basic knowledge of Visual Studio C++ project configuration. Users should configure their project include paths and linker settings to point to this development kit.
 
@@ -57,6 +59,4 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 
 ## KNOWN LIMITATIONS
 
-* Need to internally change and add objects in C++
-* Objects do not obey conservation of energy when touching
-* Temperatures end up overflowing as objects starting temps rise, limit unknown yet
+* None As Of Now.
