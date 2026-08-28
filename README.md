@@ -20,7 +20,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 
 ## IN DEVELOPMENT FEATURES
 
-* Temperature Equilibrium between objects when touching
+* None As Of Now
 
 ## FUTURE FEATURES
 
