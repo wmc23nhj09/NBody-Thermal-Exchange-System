@@ -59,5 +59,4 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 
 ## KNOWN LIMITATIONS
 
-* Max temp of 20kK before temp overflow.
-* After Reset you cannot spawn new objects.
+* None As Of Now
