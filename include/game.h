@@ -44,5 +44,7 @@ private:
 	float CreationKC;
 	bool Create;
 	bool Destroy;
-
+	bool DSC;
+	bool Radiation;
+	bool Conduction;
 };

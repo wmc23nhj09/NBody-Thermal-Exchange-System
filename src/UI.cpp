@@ -14,7 +14,7 @@ void UI::SetFlags(ImGuiWindowFlags& window_flags) {
 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus; // Keeps your game blocks interactive
 };
 
-void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC) {
+void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC, bool& DSC, bool& Radiation, bool& Conduction) {
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
@@ -30,7 +30,7 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 	//EMISSIVETY SLIDER
 	ImGui::SetCursorPos(ImVec2(40, 718));
 	ImGui::PushItemWidth(300);
-	ImGui::SliderFloat("Emissivety", &CreationEmissivety, 0, 1);
+	ImGui::SliderFloat("Emissivety", &CreationEmissivety, 0.001f, 1);
 
 	//MASS SLIDER
 	ImGui::PushItemWidth(630);
@@ -45,19 +45,30 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 	//KC SLIDER
 	ImGui::PushItemWidth(630);
 	ImGui::SetCursorPos(ImVec2(600, 818));
-	ImGui::SliderFloat("Thermal Conductivity", &CreationKC, 0, 1000);
+	ImGui::SliderFloat("Thermal Conductivity", &CreationKC, 0.001f, 1000);
 
 	//SPECIFIC HEAT ENERGY SLIDER
 	ImGui::PushItemWidth(1278-40);
 	ImGui::SetCursorPos(ImVec2(40, 908));
 	ImGui::SliderFloat("Specific Heat Energy", &CreationSpecificHeatEnergy, 0.001f, 1000);
+	ImGui::PopItemWidth();
 
 	//TEMP SLIDE
 	ImGui::SetCursorPos(ImVec2(40, 1000));
 	ImGui::SliderFloat("Initial Temperature", &CreationTemp, 1, 20000);
 
+	//DSC Button
+	ImGui::SetCursorPos(ImVec2(1600, 50));
+	
+	ImGui::Checkbox("Deep Space Cooling", &DSC);
 
+	ImGui::SetCursorPos(ImVec2(1600, 200));
 
+	ImGui::Checkbox("Radiation", &Radiation);
+
+	ImGui::SetCursorPos(ImVec2(1600, 350));
+
+	ImGui::Checkbox("Conduction", &Conduction);
 
 	// ---------- REAL UI END ----------
 	ImGui::End();

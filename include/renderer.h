@@ -9,5 +9,5 @@ public:
 
 	Render(SDL_Renderer* renderer);
 
-	void update(std::vector<ThermalBlocks> blocksinuse, SDL_FRect mouse, BlockManager blockrender);
+	void update(std::vector<ThermalBlocks> blocksinuse, SDL_FRect mouse, BlockManager blockrender, bool Create, bool Destroy);
 };

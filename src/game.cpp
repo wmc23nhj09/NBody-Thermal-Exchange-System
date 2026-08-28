@@ -39,14 +39,17 @@ blocksinuse({ { {1,   1, 25, 1, 1, 900, 0.0f, 400}, {{10, 10, 20, 20}, {(Uint32)
 	transferspeed(1000.0f),
 	framesbefore(),
 	framesnow(),
-	CreationTemp(0),
-	CreationMass(0),
-	CreationEmissivety(0),
-	CreationSpecificHeatEnergy(0),
-	CreationDensity(0),
-	CreationKC(0),
+	CreationTemp(0.001f),
+	CreationMass(0.001f),
+	CreationEmissivety(0.001f),
+	CreationSpecificHeatEnergy(0.001f),
+	CreationDensity(0.001f),
+	CreationKC(0.001f),
 	Create(false),
-	Destroy(false)
+	Destroy(false),
+	DSC(true),
+	Radiation(true),
+	Conduction(true)
 {
 };
 
@@ -74,35 +77,43 @@ void Game::run() {
 				running = false;
 			}
 
+			if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_R) {
+				blocksinuse.clear();
+			}
+
 			if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
 				for (auto& b : blocksinuse) {
 					blockrender.getHeldState(mouse, &b);
 				}
 
-				if (Create) {
-					for (auto& b : blocksinuse) {
-						if (b.interaction.held) {
-							break;
-						}
-						else {
-							SDL_FRect tempRect = {mouse.x, mouse.y, 20, 20};
-							blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
+				if (!(mouse.x > 1258) && !(mouse.y > 697)) {
+
+					if (Create) {
+						for (auto& b : blocksinuse) {
+							if (b.interaction.held) {
+								break;
+							}
+							else {
+								SDL_FRect tempRect = { mouse.x, mouse.y, 20, 20 };
+
+								blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
+							}
 						}
 					}
-				}
-				else if (Destroy) {
-					int count = 0;
-					for (auto& b : blocksinuse) {
+					else if (Destroy) {
+						int count = 0;
+						for (auto& b : blocksinuse) {
 
-						if (b.interaction.held) {
-							blocksinuse.erase(blocksinuse.begin() + count);
+							if (b.interaction.held) {
+								blocksinuse.erase(blocksinuse.begin() + count);
+							}
+							count++;
 						}
-						count++;
 					}
 				}
 			}
 
-			else if (e.type == SDL_EVENT_MOUSE_BUTTON_UP) {
+			if (e.type == SDL_EVENT_MOUSE_BUTTON_UP) {
 				for (auto& b : blocksinuse) {
 					b.interaction.held = false;
 				}
@@ -135,9 +146,9 @@ void Game::run() {
 			blockrender.moveBlocks(&b, mouse, distanceoffsetx, distanceoffsety);
 		}
 		physicsbackground();
-		renderer.update(blocksinuse, mouse, blockrender);
+		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy);
 		Ui.SetFlags(window_flags);
-		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC);
+		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction);
 		SDL_RenderPresent(renderer.renderer);
 	}
 };
@@ -145,22 +156,38 @@ void Game::run() {
 void Game::physicsbackground() {
 
 	physicswork.getCoolingConstant(sigma, blocksinuse);
-	physicswork.DeepSpaceHeatTransfer(&blocksinuse, dt, transferspeed, sigma, emissivety);
-	
+	if (DSC) {
+		physicswork.DeepSpaceHeatTransfer(&blocksinuse, dt, transferspeed, sigma, emissivety);
+	}
+
 	float beforeenergy = 0;
 	float afterenergy = 0;
 	tempsToadd.assign(blocksinuse.size(), 0.0f);
 
+	//std::cout << blocksinuse.size() << '\n';
 	for (size_t i = 0; i < blocksinuse.size(); i++) {
 		beforeenergy += (blocksinuse[i].physics.specific_heat_energy * blocksinuse[i].physics.mass * blocksinuse[i].physics.temp);
 	}
 
 	for (size_t i = 0; i < blocksinuse.size(); i++) {
+		if (blocksinuse[i].render.rect.x + 20 > 1278) {
+			blocksinuse[i].render.rect.x = 1258;
+		}
+		else if (blocksinuse[i].render.rect.x < 0) {
+			blocksinuse[i].render.rect.x = 0;
+		}
+		if (blocksinuse[i].render.rect.y + 20 > 717) {
+			blocksinuse[i].render.rect.y = 697;
+		}
+		else if (blocksinuse[i].render.rect.y < 0) {
+			blocksinuse[i].render.rect.y = 0;
+		}
+
 		for (size_t j = i + 1; j < blocksinuse.size(); j++) {
-			if (blockrender.getTouchingIndexes(blocksinuse[i], blocksinuse[j])) {
+			if (blockrender.getTouchingIndexes(blocksinuse[i], blocksinuse[j]) && Conduction) {
 				physicswork.AddConduction(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeed, tempsToadd, blockrender);
 			}
-			else {
+			else if (Radiation) {
 				physicswork.AddRadiation(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeed, sigma, tempsToadd, blockrender);
 			}
 		}
@@ -169,7 +196,6 @@ void Game::physicsbackground() {
 	for (size_t i = 0; i < tempsToadd.size(); i++) {
 		blocksinuse[i].physics.temp += tempsToadd[i];
 		physicswork.GetRGB(&blocksinuse[i]);
-		std::cout << blocksinuse[0].physics.temp << '\n';
 	}
 	
 
