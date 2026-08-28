@@ -35,12 +35,12 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 	//MASS SLIDER
 	ImGui::PushItemWidth(630);
 	ImGui::SetCursorPos(ImVec2(550, 718));
-	ImGui::SliderFloat("Mass", &CreationMass, 0.001f, 100);
+	ImGui::SliderFloat("Mass", &CreationMass, 1, 100);
 
 	//DENSITY SLIDER
 	ImGui::PushItemWidth(450);
 	ImGui::SetCursorPos(ImVec2(40, 818));
-	ImGui::SliderFloat("Density", &CreationDensity, 0.001f, 100.0f);
+	ImGui::SliderFloat("Density", &CreationDensity, 1, 100.0f);
 
 	//KC SLIDER
 	ImGui::PushItemWidth(630);
@@ -50,7 +50,7 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 	//SPECIFIC HEAT ENERGY SLIDER
 	ImGui::PushItemWidth(1278-40);
 	ImGui::SetCursorPos(ImVec2(40, 908));
-	ImGui::SliderFloat("Specific Heat Energy", &CreationSpecificHeatEnergy, 0.001f, 1000);
+	ImGui::SliderFloat("Specific Heat Energy", &CreationSpecificHeatEnergy, 1, 1000);
 	ImGui::PopItemWidth();
 
 	//TEMP SLIDE

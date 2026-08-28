@@ -36,14 +36,14 @@ blocksinuse({ { {1,   1, 25, 1, 1, 900, 0.0f, 400}, {{10, 10, 20, 20}, {(Uint32)
 	Simdt(),
 	sigma(5.67e-8),
 	emissivety(1),
-	transferspeed(1000.0f),
+	transferspeed(100.0f),
 	framesbefore(),
 	framesnow(),
-	CreationTemp(0.001f),
-	CreationMass(0.001f),
+	CreationTemp(1),
+	CreationMass(1),
 	CreationEmissivety(0.001f),
 	CreationSpecificHeatEnergy(0.001f),
-	CreationDensity(0.001f),
+	CreationDensity(1),
 	CreationKC(0.001f),
 	Create(false),
 	Destroy(false),
@@ -61,11 +61,12 @@ void Game::run() {
 	ImGui_ImplSDL3_InitForSDLRenderer(window.window, renderer.renderer);
 	ImGui_ImplSDLRenderer3_Init(renderer.renderer);
 
-	framesbefore = SDL_GetPerformanceCounter();
+	//framesbefore = SDL_GetPerformanceCounter();
 	while (running) {
-		framesnow = SDL_GetPerformanceCounter();
+		//framesnow = SDL_GetPerformanceCounter();
 
-		dt = ((float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency()) / 100.0f;
+		//dt = ((float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency()) / 1200.0f;
+		dt = physicswork.setdt(blocksinuse, sigma, blockrender);
 
 		Simdt = dt * SimSpeed;
 		framesbefore = framesnow;
@@ -89,15 +90,20 @@ void Game::run() {
 				if (!(mouse.x > 1258) && !(mouse.y > 697)) {
 
 					if (Create) {
-						for (auto& b : blocksinuse) {
-							if (b.interaction.held) {
-								break;
+						if (blocksinuse.size() > 0) {
+							for (auto& b : blocksinuse) {
+								if (b.interaction.held) {
+									break;
+								}
+								else {
+									SDL_FRect tempRect = { mouse.x, mouse.y, 20, 20 };
+									blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
+								}
 							}
-							else {
-								SDL_FRect tempRect = { mouse.x, mouse.y, 20, 20 };
-
-								blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
-							}
+						}
+						else {
+							SDL_FRect tempRect = { mouse.x, mouse.y, 20, 20 };
+							blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
 						}
 					}
 					else if (Destroy) {
