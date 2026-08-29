@@ -107,13 +107,13 @@ void Game::run() {
 						}
 					}
 					else if (Destroy) {
-						int count = 0;
-						for (auto& b : blocksinuse) {
-
-							if (b.interaction.held) {
-								blocksinuse.erase(blocksinuse.begin() + count);
+						for (auto it = blocksinuse.begin(); it != blocksinuse.end(); ) {
+							if (it->interaction.held) {
+								it = blocksinuse.erase(it);
 							}
-							count++;
+							else {
+								++it;
+							}
 						}
 					}
 				}

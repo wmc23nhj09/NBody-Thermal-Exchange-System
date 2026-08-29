@@ -156,7 +156,6 @@ float Physics::setdt(std::vector<ThermalBlocks> block, double sigma, BlockManage
 	float usedPow = std::max(estCondPower, estRadPower);
 	usedPow = std::max((double)usedPow, estDSCPower);
 
-	std::cout << "POW: " << usedPow << '\n';
 	if (usedPow <= 0) {
 		return 1.0f/1200.0f;
 	}
