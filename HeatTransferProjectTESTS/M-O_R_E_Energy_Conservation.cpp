@@ -51,7 +51,7 @@ void MORE_EC_Run()
 
     while (!equilibriumReached && steps < maxSteps)
     {
-        std::vector<float> tempsToadd(blocksinuse.size(), 0.0f);
+        std::vector<double> tempsToadd(blocksinuse.size(), 0.0f);
 
         // Calculate all pair interactions
         for (size_t i = 0; i < blocksinuse.size(); ++i)

@@ -112,7 +112,7 @@ void Physics::getCoolingConstant(double sigma, std::vector<ThermalBlocks>& block
 	}
 }
 
-float Physics::setdt(std::vector<ThermalBlocks> block, double sigma, BlockManager blockUser) {
+float Physics::setdt(std::vector<ThermalBlocks>& block, double sigma, BlockManager& blockUser) {
 	ThermalBlocks Ba{}, Bb{};
 	float MaxHeatA = 0;
 	float MinHeatB = 2e4;

@@ -35,6 +35,14 @@
     <ClCompile Include="..\Third-Party\imgui_stdlib.cpp" />
     <ClCompile Include="..\Third-Party\imgui_tables.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\blocks.h" />
+    <ClInclude Include="..\include\game.h" />
+    <ClInclude Include="..\include\physics.h" />
+    <ClInclude Include="..\include\renderer.h" />
+    <ClInclude Include="..\include\UI.h" />
+    <ClInclude Include="..\include\window.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

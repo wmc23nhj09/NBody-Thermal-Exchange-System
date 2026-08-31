@@ -3,5 +3,5 @@
 
 int main() {
 	SB_DSP_Run();
-	//MORE_EC_Run();
+	MORE_EC_Run();
 }
