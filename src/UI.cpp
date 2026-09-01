@@ -14,7 +14,7 @@ void UI::SetFlags(ImGuiWindowFlags& window_flags) {
 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus; // Keeps your game blocks interactive
 };
 
-void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC, bool& DSC, bool& Radiation, bool& Conduction) {
+void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC, bool& DSC, bool& Radiation, bool& Conduction, const int& WINHEIGHT, const int& WINWIDTH) {
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
@@ -28,45 +28,45 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 
 	// ---------- REAL UI BEGIN ----------
 	//EMISSIVETY SLIDER
-	ImGui::SetCursorPos(ImVec2(40, 718));
-	ImGui::PushItemWidth(300);
+	ImGui::SetCursorPos(ImVec2(0.02*WINWIDTH, 0.67*WINHEIGHT));
+	ImGui::PushItemWidth(0.16*WINWIDTH);
 	ImGui::SliderFloat("Emissivety", &CreationEmissivety, 0.001f, 1);
 
 	//MASS SLIDER
-	ImGui::PushItemWidth(630);
-	ImGui::SetCursorPos(ImVec2(550, 718));
+	ImGui::PushItemWidth(0.33*WINWIDTH);
+	ImGui::SetCursorPos(ImVec2(0.28*WINWIDTH, 0.67*WINHEIGHT));
 	ImGui::SliderFloat("Mass", &CreationMass, 1, 100);
 
 	//DENSITY SLIDER
-	ImGui::PushItemWidth(450);
-	ImGui::SetCursorPos(ImVec2(40, 818));
+	ImGui::PushItemWidth(0.24*WINWIDTH);
+	ImGui::SetCursorPos(ImVec2(0.02*WINWIDTH, 0.77*WINHEIGHT));
 	ImGui::SliderFloat("Density", &CreationDensity, 1, 100.0f);
 
 	//KC SLIDER
-	ImGui::PushItemWidth(630);
-	ImGui::SetCursorPos(ImVec2(600, 818));
+	ImGui::PushItemWidth(0.33*WINWIDTH);
+	ImGui::SetCursorPos(ImVec2(0.31*WINWIDTH, 0.77*WINHEIGHT));
 	ImGui::SliderFloat("Thermal Conductivity", &CreationKC, 0.001f, 1000);
 
 	//SPECIFIC HEAT ENERGY SLIDER
-	ImGui::PushItemWidth(1278-40);
-	ImGui::SetCursorPos(ImVec2(40, 908));
+	ImGui::PushItemWidth(0.64*WINWIDTH);
+	ImGui::SetCursorPos(ImVec2(0.02*WINWIDTH, 0.85*WINHEIGHT));
 	ImGui::SliderFloat("Specific Heat Energy", &CreationSpecificHeatEnergy, 1, 1000);
 	ImGui::PopItemWidth();
 
 	//TEMP SLIDE
-	ImGui::SetCursorPos(ImVec2(40, 1000));
+	ImGui::SetCursorPos(ImVec2(0.02*WINWIDTH, 0.94*WINHEIGHT));
 	ImGui::SliderFloat("Initial Temperature", &CreationTemp, 1, 20000);
 
 	//DSC Button
-	ImGui::SetCursorPos(ImVec2(1600, 50));
+	ImGui::SetCursorPos(ImVec2(0.84*WINWIDTH, 0.06*WINHEIGHT));
 	
 	ImGui::Checkbox("Deep Space Cooling", &DSC);
 
-	ImGui::SetCursorPos(ImVec2(1600, 200));
+	ImGui::SetCursorPos(ImVec2(0.84 * WINWIDTH, 0.2*WINHEIGHT));
 
 	ImGui::Checkbox("Radiation", &Radiation);
 
-	ImGui::SetCursorPos(ImVec2(1600, 350));
+	ImGui::SetCursorPos(ImVec2(0.84 * WINWIDTH, 0.33*WINHEIGHT));
 
 	ImGui::Checkbox("Conduction", &Conduction);
 

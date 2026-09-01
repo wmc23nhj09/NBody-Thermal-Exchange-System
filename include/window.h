@@ -8,6 +8,6 @@ public:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
-	const int WINDOW_W = 1200;
-	const int WINDOW_H = 800;
+	int WINDOW_W = 0;
+	int WINDOW_H = 0;
 };

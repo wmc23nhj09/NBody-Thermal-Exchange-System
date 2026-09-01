@@ -66,6 +66,9 @@ void Game::run() {
 		//framesnow = SDL_GetPerformanceCounter();
 
 		//dt = ((float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency()) / 1200.0f;
+
+		SDL_DisplayID display = SDL_GetPrimaryDisplay();
+		const SDL_DisplayMode* dm = SDL_GetCurrentDisplayMode(display);
 		dt = physicswork.setdt(blocksinuse, sigma, blockrender);
 
 		Simdt = dt * SimSpeed;
@@ -151,10 +154,12 @@ void Game::run() {
 		for (auto& b : blocksinuse) {
 			blockrender.moveBlocks(&b, mouse, distanceoffsetx, distanceoffsety);
 		}
+
+		std::cout << dm->w << " , " << dm->h << '\n';
 		physicsbackground();
 		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy);
 		Ui.SetFlags(window_flags);
-		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction);
+		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction, dm->h, dm->w);
 		SDL_RenderPresent(renderer.renderer);
 	}
 };
