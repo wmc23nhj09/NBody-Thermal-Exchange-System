@@ -181,14 +181,14 @@ void Game::physicsbackground() {
 
 
 	for (size_t i = 0; i < blocksinuse.size(); i++) {
-		if (blocksinuse[i].render.rect.x + 20 > 0.66*dm->w) {
-			blocksinuse[i].render.rect.x = 0.65*dm->w;
+		if (blocksinuse[i].render.rect.x > 0.77 * dm->w) {
+			blocksinuse[i].render.rect.x = 0.77*dm->w;
 		}
 		else if (blocksinuse[i].render.rect.x < 0) {
 			blocksinuse[i].render.rect.x = 0;
 		}
-		if (blocksinuse[i].render.rect.y + 20 > 0.66 * dm->h) {
-			blocksinuse[i].render.rect.y = 0.65*dm->h;
+		if (blocksinuse[i].render.rect.y > 0.645 * dm->h) {
+			blocksinuse[i].render.rect.y = 0.645*dm->h;
 		}
 		else if (blocksinuse[i].render.rect.y < 0) {
 			blocksinuse[i].render.rect.y = 0;
