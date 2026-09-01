@@ -70,6 +70,9 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 
 	ImGui::Checkbox("Conduction", &Conduction);
 
+	ImGui::SetCursorPos(ImVec2(0.67 * (float)WINWIDTH, 0.65 * (float)WINHEIGHT));
+	ImGui::Text("Hello Nikky");
+
 	// ---------- REAL UI END ----------
 	ImGui::End();
 

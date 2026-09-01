@@ -47,4 +47,5 @@ private:
 	bool DSC;
 	bool Radiation;
 	bool Conduction;
+	const SDL_DisplayMode* dm;
 };

@@ -3,6 +3,7 @@
 #include "blocks.h"
 #include "physics.h"
 #include "imgui.h"
+#include "windows.h"
 #include "iostream"
 #include "imgui_impl_sdlrenderer3.h"
 #include "imgui_impl_sdl3.h"
@@ -18,10 +19,7 @@ window(),
 renderer(window.renderer),
 //PHYSICS							 //RENDERING											 //INTERACTION
 //Temp      A   D   Mass, E  SHE   K  KC||        RECT						 RGB				 || Held   Down
-blocksinuse({ { {1,   1, 25, 1, 1, 900, 0.0f, 400}, {{10, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false}},
-			{   {temptry,     1, 25, 1, 1, 500, 0.0f, 400}, { {50, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
-			{   {temptry,    1, 25, 1, 1, 300, 0.0f, 400}, { {90, 10, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} },
-			{   {1,       1, 25, 1, 1, 500, 0.0f, 400},{ {30, 50, 20, 20}, {(Uint32)0, (Uint32)0, (Uint32)0}}, {false, false} } }),
+blocksinuse{},
 	tempsToadd{},
 	distanceoffsetx(-1.0f),
 	distanceoffsety(-1.0f),
@@ -49,7 +47,8 @@ blocksinuse({ { {1,   1, 25, 1, 1, 900, 0.0f, 400}, {{10, 10, 20, 20}, {(Uint32)
 	Destroy(false),
 	DSC(true),
 	Radiation(true),
-	Conduction(true)
+	Conduction(true),
+	dm()
 {
 };
 
@@ -68,7 +67,7 @@ void Game::run() {
 		//dt = ((float)(framesnow - framesbefore) / SDL_GetPerformanceFrequency()) / 1200.0f;
 
 		SDL_DisplayID display = SDL_GetPrimaryDisplay();
-		const SDL_DisplayMode* dm = SDL_GetCurrentDisplayMode(display);
+		dm = SDL_GetCurrentDisplayMode(display);
 		dt = physicswork.setdt(blocksinuse, sigma, blockrender);
 
 		Simdt = dt * SimSpeed;
@@ -151,11 +150,11 @@ void Game::run() {
 				Destroy = false;
 			}
 		}
+
 		for (auto& b : blocksinuse) {
 			blockrender.moveBlocks(&b, mouse, distanceoffsetx, distanceoffsety);
 		}
 
-		std::cout << dm->w << " , " << dm->h << '\n';
 		physicsbackground();
 		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy);
 		Ui.SetFlags(window_flags);
@@ -180,15 +179,16 @@ void Game::physicsbackground() {
 		beforeenergy += (blocksinuse[i].physics.specific_heat_energy * blocksinuse[i].physics.mass * blocksinuse[i].physics.temp);
 	}
 
+
 	for (size_t i = 0; i < blocksinuse.size(); i++) {
-		if (blocksinuse[i].render.rect.x + 20 > 1278) {
-			blocksinuse[i].render.rect.x = 1258;
+		if (blocksinuse[i].render.rect.x + 20 > 0.66*dm->w) {
+			blocksinuse[i].render.rect.x = 0.65*dm->w;
 		}
 		else if (blocksinuse[i].render.rect.x < 0) {
 			blocksinuse[i].render.rect.x = 0;
 		}
-		if (blocksinuse[i].render.rect.y + 20 > 717) {
-			blocksinuse[i].render.rect.y = 697;
+		if (blocksinuse[i].render.rect.y + 20 > 0.66 * dm->h) {
+			blocksinuse[i].render.rect.y = 0.65*dm->h;
 		}
 		else if (blocksinuse[i].render.rect.y < 0) {
 			blocksinuse[i].render.rect.y = 0;
