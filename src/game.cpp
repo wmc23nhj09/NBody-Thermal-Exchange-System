@@ -30,8 +30,6 @@ blocksinuse{},
 	mouse({ 0,0,1,1 }),
 	mouseMap(),
 	dt(),
-	SimSpeed(100.0f),
-	Simdt(),
 	sigma(5.67e-8),
 	emissivety(1),
 	transferspeed(100.0f),
@@ -68,10 +66,7 @@ void Game::run() {
 
 		SDL_DisplayID display = SDL_GetPrimaryDisplay();
 		dm = SDL_GetCurrentDisplayMode(display);
-		dt = physicswork.setdt(blocksinuse, sigma, blockrender);
 
-		Simdt = dt * SimSpeed;
-		framesbefore = framesnow;
 		mouseMap = SDL_GetMouseState(&mouse.x, &mouse.y);
 		while (SDL_PollEvent(&e)) {
 			ImGui_ImplSDL3_ProcessEvent(&e);
@@ -154,6 +149,10 @@ void Game::run() {
 		for (auto& b : blocksinuse) {
 			blockrender.moveBlocks(&b, mouse, distanceoffsetx, distanceoffsety);
 		}
+
+		dt = physicswork.setdt(blocksinuse, sigma, blockrender);
+
+		framesbefore = framesnow;
 
 		physicsbackground();
 		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy);

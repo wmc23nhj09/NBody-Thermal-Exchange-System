@@ -29,8 +29,6 @@ private:
 	SDL_FRect mouse;
 	Uint32 mouseMap;
 	double dt;
-	float SimSpeed;
-	float Simdt;
 	float transferspeed;
 	const double sigma;
 	int emissivety;
