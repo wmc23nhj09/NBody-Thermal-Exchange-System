@@ -33,7 +33,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
   >**NOTE:** As temperature increases, the margin of error increases due to the non-linear `(T^4)` relationship in Stefan-Boltzmann radiation. This test allows up to 1% error for single-step calculations. A future multi-step simulation stability test will verify accuracy using smaller timesteps and improve high-temperature accuracy.
 
 * Energy Conservation of objects finding Equilibrium
- >**NOTE:** Energy conservation managed to achieve a temperature different of 7.5 parts per million during tests (0.000075%)! 
+  >**NOTE:** Energy conservation managed to achieve a temperature different of 7.5 parts per million during tests (0.000075%)! 
 
 ### TO ADD
 * Multi-step simulation stability
