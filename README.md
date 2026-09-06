@@ -20,7 +20,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 
 ## IN DEVELOPMENT FEATURES
 
-* None As Of Now
+* Block property viewer
 
 ## FUTURE FEATURES
 
