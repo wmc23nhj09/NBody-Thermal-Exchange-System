@@ -1,9 +1,5 @@
 #include "SDL3/SDL.h"
 #include "blocks.h"
-#include "algorithm"
-#include "windows.h"
-#include "iostream"
-#include "vector"
 
 
 //Find the temperature difference between two objects
@@ -18,7 +14,7 @@ float BlockManager::GetTempDif(double Tempa, double Tempb) {
 
 //Create a block - MUST FIX
 ThermalBlocks BlockManager::CreateBlock(double temp, SDL_FRect& rect, double A, double d, double mass, double emissivety, double specific_heat_energy, double k) {
-	ThermalBlocks block = { {temp, A, d, mass, emissivety, specific_heat_energy, k}, { rect, {0, 0, 0}}, {false, false} };
+	ThermalBlocks block = { {temp, A, d, mass, emissivety, specific_heat_energy, 0, k}, { rect, {0, 0, 0}}, {false, false, false} };
 	return block;
 }
 
@@ -32,9 +28,7 @@ void BlockManager::renderallblocks(ThermalBlocks& BlockManager, SDL_Renderer* re
 void BlockManager::getHeldState(SDL_FRect& mouse, ThermalBlocks* BlockManager) {
 	if (mouse.x < BlockManager->render.rect.x + BlockManager->render.rect.w && mouse.x + mouse.w > BlockManager->render.rect.x && mouse.y < BlockManager->render.rect.y + BlockManager->render.rect.h && mouse.y + mouse.h > BlockManager->render.rect.y) {
 		BlockManager->interaction.held = true;
-	}
-	else {
-		BlockManager->interaction.held = false;
+		BlockManager->interaction.clicked = true;
 	}
 }
 

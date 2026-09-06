@@ -1,5 +1,7 @@
 #include <imgui.h>
 #include "UI.h"
+#include "blocks.h"
+#include "string"
 #include <SDL3/SDL.h>
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
@@ -14,7 +16,7 @@ void UI::SetFlags(ImGuiWindowFlags& window_flags) {
 	window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus; // Keeps your game blocks interactive
 };
 
-void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC, bool& DSC, bool& Radiation, bool& Conduction, const int& WINHEIGHT, const int& WINWIDTH) {
+void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC, bool& DSC, bool& Radiation, bool& Conduction, const int& WINHEIGHT, const int& WINWIDTH, ThermalBlocks* block) {
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
@@ -70,13 +72,9 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 
 	ImGui::Checkbox("Conduction", &Conduction);
 
-	ImGui::SetCursorPos(ImVec2(0.67 * (float)WINWIDTH, 0.65 * (float)WINHEIGHT));
-<<<<<<< HEAD
-	ImGui::Text("Hello Nikky");
-=======
-	//ImGui::Text("Hello Nikky");
->>>>>>> origin/master
-
+	if (block != nullptr) {
+		ImGui::Text(std::to_string(block->physics.temp).c_str());
+	}
 	// ---------- REAL UI END ----------
 	ImGui::End();
 

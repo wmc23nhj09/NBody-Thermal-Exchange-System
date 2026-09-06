@@ -18,35 +18,36 @@ Game::Game() : running(true),
 window(),
 renderer(window.renderer),
 //PHYSICS							 //RENDERING											 //INTERACTION
-//Temp      A   D   Mass, E  SHE   K  KC||        RECT						 RGB				 || Held   Down
+//Temp      A   D   Mass, E  SHE   K  KC||        RECT						 RGB				 || Held   Down   clicked
 blocksinuse{},
-	tempsToadd{},
-	distanceoffsetx(-1.0f),
-	distanceoffsety(-1.0f),
-	e{},
-	blockrender(),
-	physicswork(),
-	Ui(),
-	mouse({ 0,0,1,1 }),
-	mouseMap(),
-	dt(),
-	sigma(5.67e-8),
-	emissivety(1),
-	transferspeed(100.0f),
-	framesbefore(),
-	framesnow(),
-	CreationTemp(1),
-	CreationMass(1),
-	CreationEmissivety(0.001f),
-	CreationSpecificHeatEnergy(0.001f),
-	CreationDensity(1),
-	CreationKC(0.001f),
-	Create(false),
-	Destroy(false),
-	DSC(true),
-	Radiation(true),
-	Conduction(true),
-	dm()
+tempsToadd{},
+distanceoffsetx(-1.0f),
+distanceoffsety(-1.0f),
+e{},
+blockrender(),
+physicswork(),
+Ui(),
+mouse({ 0,0,1,1 }),
+mouseMap(),
+dt(),
+sigma(5.67e-8),
+emissivety(1),
+transferspeedConductionMult(1000.0f),
+framesbefore(),
+framesnow(),
+CreationTemp(1),
+CreationMass(1),
+CreationEmissivety(0.001f),
+CreationSpecificHeatEnergy(0.001f),
+CreationDensity(1),
+CreationKC(0.001f),
+Create(false),
+Destroy(false),
+DSC(true),
+Radiation(true),
+Conduction(true),
+dm(),
+SelectedBlock(nullptr)
 {
 };
 
@@ -57,6 +58,8 @@ void Game::run() {
 	ImGui::CreateContext();
 	ImGui_ImplSDL3_InitForSDLRenderer(window.window, renderer.renderer);
 	ImGui_ImplSDLRenderer3_Init(renderer.renderer);
+
+	int count = 0;
 
 	//framesbefore = SDL_GetPerformanceCounter();
 	while (running) {
@@ -81,7 +84,17 @@ void Game::run() {
 
 			if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
 				for (auto& b : blocksinuse) {
+					b.interaction.held = false;
+					b.interaction.clicked = false;
 					blockrender.getHeldState(mouse, &b);
+					if (b.interaction.held) {
+						count++;
+						SelectedBlock = &b;
+						break;
+					}
+				}
+				if (count == 0) {
+					SelectedBlock = nullptr;
 				}
 
 				if (!(mouse.x > 1258) && !(mouse.y > 697)) {
@@ -107,6 +120,9 @@ void Game::run() {
 						for (auto it = blocksinuse.begin(); it != blocksinuse.end(); ) {
 							if (it->interaction.held) {
 								it = blocksinuse.erase(it);
+								SelectedBlock = nullptr;
+								int count = 0;
+								break;
 							}
 							else {
 								++it;
@@ -143,6 +159,8 @@ void Game::run() {
 			if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_F) {
 				Create = false;
 				Destroy = false;
+				SelectedBlock = nullptr;
+				int count = 0;
 			}
 		}
 
@@ -151,13 +169,14 @@ void Game::run() {
 		}
 
 		dt = physicswork.setdt(blocksinuse, sigma, blockrender);
+		std::cout << dt << '\n';
 
 		framesbefore = framesnow;
 
 		physicsbackground();
 		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy);
 		Ui.SetFlags(window_flags);
-		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction, dm->h, dm->w);
+		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction, dm->h, dm->w, SelectedBlock);
 		SDL_RenderPresent(renderer.renderer);
 	}
 };
@@ -166,7 +185,7 @@ void Game::physicsbackground() {
 
 	physicswork.getCoolingConstant(sigma, blocksinuse);
 	if (DSC) {
-		physicswork.DeepSpaceHeatTransfer(&blocksinuse, dt, transferspeed, sigma, emissivety);
+		physicswork.DeepSpaceHeatTransfer(&blocksinuse, dt, sigma, emissivety);
 	}
 
 	float beforeenergy = 0;
@@ -176,6 +195,10 @@ void Game::physicsbackground() {
 	//std::cout << blocksinuse.size() << '\n';
 	for (size_t i = 0; i < blocksinuse.size(); i++) {
 		beforeenergy += (blocksinuse[i].physics.specific_heat_energy * blocksinuse[i].physics.mass * blocksinuse[i].physics.temp);
+		if (blocksinuse[i].physics.temp <= 1000) {
+			std::cout << "REACHED" << '\n';
+			Sleep(100000);
+		}
 	}
 
 
@@ -195,10 +218,10 @@ void Game::physicsbackground() {
 
 		for (size_t j = i + 1; j < blocksinuse.size(); j++) {
 			if (blockrender.getTouchingIndexes(blocksinuse[i], blocksinuse[j]) && Conduction) {
-				physicswork.AddConduction(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeed, tempsToadd, blockrender);
+				physicswork.AddConduction(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeedConductionMult, tempsToadd, blockrender);
 			}
 			else if (Radiation) {
-				physicswork.AddRadiation(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeed, sigma, tempsToadd, blockrender);
+				physicswork.AddRadiation(blocksinuse[i], blocksinuse[j], i, j, dt, sigma, tempsToadd, blockrender);
 			}
 		}
 	}

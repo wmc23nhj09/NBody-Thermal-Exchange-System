@@ -29,7 +29,7 @@ private:
 	SDL_FRect mouse;
 	Uint32 mouseMap;
 	double dt;
-	float transferspeed;
+	float transferspeedConductionMult;
 	const double sigma;
 	int emissivety;
 	Uint64 framesbefore;
@@ -46,4 +46,5 @@ private:
 	bool Radiation;
 	bool Conduction;
 	const SDL_DisplayMode* dm;
+	ThermalBlocks* SelectedBlock;
 };

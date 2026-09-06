@@ -5,7 +5,7 @@
 #include "iostream"
 #include "algorithm"
 
-void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, float dt, float transferspeed, double sigma, double emissivety) {
+void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, float dt, double sigma, double emissivety) {
 	for (auto ba = blocks->begin(); ba != blocks->end(); ++ba) {
 		double old_temp = ba->physics.temp;
 		double space_temp = 2.7;
@@ -42,7 +42,7 @@ void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& Bl
 	}
 }
 
-void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, float transferspeed, double sigma, std::vector<double>& tempsToadd, BlockManager& blockUser) {
+void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, double sigma, std::vector<double>& tempsToadd, BlockManager& blockUser) {
 	float EFF = sqrt(BlockA.physics.A * BlockB.physics.A);
 
 	float distanceSquared = pow(BlockA.render.rect.x - BlockB.render.rect.x, 2) + pow(BlockA.render.rect.y - BlockB.render.rect.y, 2);
@@ -57,7 +57,7 @@ void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& Blo
 		distanceSquared = 1.0f;
 	}
 	float radiationpower = radiationCoefficient / (distanceSquared);
-	float Q = radiationpower * dt * transferspeed;
+	float Q = radiationpower * dt * 100;
 
 	Q = abs(Q);
 
@@ -127,9 +127,6 @@ float Physics::setdt(std::vector<ThermalBlocks>& block, double sigma, BlockManag
 		}
 	}
 
-	if (block.size() <= 1) {
-		return 1.0f/120.0f;
-	}
 
 	float distSq = pow(Ba.render.rect.x - Bb.render.rect.x, 2) + pow(Ba.render.rect.y - Bb.render.rect.y, 2);
 	float estRadPower = abs((sigma * Ba.physics.emissivety *
@@ -151,19 +148,27 @@ float Physics::setdt(std::vector<ThermalBlocks>& block, double sigma, BlockManag
 	double temp_fourthed = old_temp * old_temp * old_temp * old_temp;
 	double space4 = space_temp * space_temp * space_temp * space_temp;
 
-	double estDSCPower = abs(Ba.physics.k * (temp_fourthed - space4));
+	double estDSCPower =
+		std::abs(
+			Ba.physics.emissivety *
+			sigma *
+			Ba.physics.A *
+			(temp_fourthed - space4)
+		);
 
 	float usedPow = std::max(estCondPower, estRadPower);
 	usedPow = std::max((double)usedPow, estDSCPower);
 
+	int maxtemptransfer = 2;
+
 	if (usedPow <= 0) {
-		return 1.0f/1200.0f;
+		return 1.0f / 120.0f;
 	}
 
-	if (usedPow < 1e6) {
-		return 1.0f / 1200.0f;
+	if (((maxtemptransfer*Ba.physics.mass * Ba.physics.specific_heat_energy) / usedPow) > (1.0f / 120.0f) or block.empty()) {
+		return (1.0f/120.0f);
 	}
 	else {
-		return ((1*(Ba.physics.mass * Ba.physics.specific_heat_energy))/usedPow);
+		return (maxtemptransfer*Ba.physics.mass * Ba.physics.specific_heat_energy) / usedPow;
 	}
 }

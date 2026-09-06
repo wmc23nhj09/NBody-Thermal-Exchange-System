@@ -33,6 +33,7 @@ struct RenderingState {
 struct InteractionState {
 	bool held;
 	bool down;
+	bool clicked;
 };
 
 struct ThermalBlocks {
