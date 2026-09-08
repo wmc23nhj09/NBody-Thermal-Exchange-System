@@ -3,7 +3,7 @@
 
 
 //Find the temperature difference between two objects
-float BlockManager::GetTempDif(double Tempa, double Tempb) {
+double BlockManager::GetTempDif(double Tempa, double Tempb) {
 	if (Tempa > Tempb) {
 		return Tempa - Tempb;
 	}

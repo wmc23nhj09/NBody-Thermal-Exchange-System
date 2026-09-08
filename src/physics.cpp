@@ -5,7 +5,7 @@
 #include "iostream"
 #include "algorithm"
 
-void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, float dt, double sigma, double emissivety) {
+void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, double dt, double sigma, double emissivety) {
 	for (auto ba = blocks->begin(); ba != blocks->end(); ++ba) {
 		double old_temp = ba->physics.temp;
 		double space_temp = 2.7;
@@ -19,7 +19,7 @@ void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, float dt
 	}
 }
 
-void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, float transferspeed, std::vector<double>& tempsToadd, BlockManager& blockUser) {
+void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, double dt, float transferspeed, std::vector<double>& tempsToadd, BlockManager& blockUser) {
 	
 	float TempDif = blockUser.GetTempDif(BlockA.physics.temp, BlockB.physics.temp);
 
@@ -42,7 +42,7 @@ void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& Bl
 	}
 }
 
-void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, float dt, double sigma, std::vector<double>& tempsToadd, BlockManager& blockUser) {
+void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, double dt, double sigma, std::vector<double>& tempsToadd, BlockManager& blockUser) {
 	float EFF = sqrt(BlockA.physics.A * BlockB.physics.A);
 
 	float distanceSquared = pow(BlockA.render.rect.x - BlockB.render.rect.x, 2) + pow(BlockA.render.rect.y - BlockB.render.rect.y, 2);

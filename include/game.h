@@ -46,5 +46,5 @@ private:
 	bool Radiation;
 	bool Conduction;
 	const SDL_DisplayMode* dm;
-	ThermalBlocks* SelectedBlock;
+	std::vector<ThermalBlocks*> SelectedBlock;
 };

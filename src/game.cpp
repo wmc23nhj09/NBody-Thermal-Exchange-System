@@ -47,7 +47,7 @@ DSC(true),
 Radiation(true),
 Conduction(true),
 dm(),
-SelectedBlock(nullptr)
+SelectedBlock{ nullptr, nullptr }
 {
 };
 
@@ -89,13 +89,21 @@ void Game::run() {
 					blockrender.getHeldState(mouse, &b);
 					if (b.interaction.held) {
 						count++;
-						SelectedBlock = &b;
+
+						if (SelectedBlock[0] == nullptr || SelectedBlock[1] != nullptr) {
+							SelectedBlock[0] = &b;
+						}
+						else {
+							SelectedBlock[1] = &b;
+						}
+
 						break;
 					}
 				}
-				if (count == 0) {
-					SelectedBlock = nullptr;
-				}
+				//if (count == 0) {
+				//	for (int i =)
+				//	SelectedBlock = nullptr;
+				//}
 
 				if (!(mouse.x > 1258) && !(mouse.y > 697)) {
 
@@ -120,7 +128,13 @@ void Game::run() {
 						for (auto it = blocksinuse.begin(); it != blocksinuse.end(); ) {
 							if (it->interaction.held) {
 								it = blocksinuse.erase(it);
-								SelectedBlock = nullptr;
+								if (SelectedBlock[0] == &*it) {
+									SelectedBlock[0] = SelectedBlock[1];
+									SelectedBlock[1] = nullptr;
+								}
+								else {
+									SelectedBlock[1] = nullptr;
+								}
 								int count = 0;
 								break;
 							}
@@ -159,7 +173,7 @@ void Game::run() {
 			if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_F) {
 				Create = false;
 				Destroy = false;
-				SelectedBlock = nullptr;
+				SelectedBlock = {nullptr, nullptr};
 				int count = 0;
 			}
 		}
@@ -169,12 +183,11 @@ void Game::run() {
 		}
 
 		dt = physicswork.setdt(blocksinuse, sigma, blockrender);
-		std::cout << dt << '\n';
 
 		framesbefore = framesnow;
 
 		physicsbackground();
-		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy);
+		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy, dm->w, dm->h);
 		Ui.SetFlags(window_flags);
 		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction, dm->h, dm->w, SelectedBlock);
 		SDL_RenderPresent(renderer.renderer);
@@ -188,29 +201,25 @@ void Game::physicsbackground() {
 		physicswork.DeepSpaceHeatTransfer(&blocksinuse, dt, sigma, emissivety);
 	}
 
-	float beforeenergy = 0;
-	float afterenergy = 0;
+	double beforeenergy = 0;
+	double afterenergy = 0;
 	tempsToadd.assign(blocksinuse.size(), 0.0f);
 
 	//std::cout << blocksinuse.size() << '\n';
 	for (size_t i = 0; i < blocksinuse.size(); i++) {
 		beforeenergy += (blocksinuse[i].physics.specific_heat_energy * blocksinuse[i].physics.mass * blocksinuse[i].physics.temp);
-		if (blocksinuse[i].physics.temp <= 1000) {
-			std::cout << "REACHED" << '\n';
-			Sleep(100000);
-		}
 	}
 
 
 	for (size_t i = 0; i < blocksinuse.size(); i++) {
-		if (blocksinuse[i].render.rect.x > 0.77 * dm->w) {
-			blocksinuse[i].render.rect.x = 0.77*dm->w;
+		if (blocksinuse[i].render.rect.x > (float)0.77 * dm->w) {
+			blocksinuse[i].render.rect.x = (float)0.77 * dm->w;
 		}
 		else if (blocksinuse[i].render.rect.x < 0) {
 			blocksinuse[i].render.rect.x = 0;
 		}
-		if (blocksinuse[i].render.rect.y > 0.645 * dm->h) {
-			blocksinuse[i].render.rect.y = 0.645*dm->h;
+		if (blocksinuse[i].render.rect.y > (float)0.645 * dm->h) {
+			blocksinuse[i].render.rect.y = (float)0.645 * dm->h;
 		}
 		else if (blocksinuse[i].render.rect.y < 0) {
 			blocksinuse[i].render.rect.y = 0;
