@@ -12,15 +12,16 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 * Blackbody radiation colour mapping
 * Temperature loss to deep space using Stefan-Boltzmann's law
 * Temperature Equilibrium between objects at a distance due to radiation
-* Obey Conservation of energy at a distance *
+* Obey Conservation of energy at a distance
 * Draggable objects
 * Changeable mass and physics states of objects
 * Spawnable objects
 * Basic UI system
+* Real time 2 way block property comparison
 
 ## IN DEVELOPMENT FEATURES
 
-* Block property viewer
+* None As Of Now
 
 ## FUTURE FEATURES
 
