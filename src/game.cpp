@@ -90,10 +90,10 @@ void Game::run() {
 					if (b.interaction.held) {
 						count++;
 
-						if (SelectedBlock[0] == nullptr || SelectedBlock[1] != nullptr) {
+						if (SelectedBlock[0] == nullptr || (SelectedBlock[1] != nullptr && SelectedBlock[1] != &b)) {
 							SelectedBlock[0] = &b;
 						}
-						else {
+						else if (SelectedBlock[0] != &b) {
 							SelectedBlock[1] = &b;
 						}
 

@@ -62,12 +62,12 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 
 	//SPECIFIC HEAT ENERGY SLIDER
 	ImGui::PushItemWidth(0.64 * WINWIDTH);
-	ImGui::SetCursorPos(ImVec2(0.02 * WINWIDTH, 0.85 * WINHEIGHT));
+	ImGui::SetCursorPos(ImVec2(0.02 * WINWIDTH, 0.94 * WINHEIGHT));
 	ImGui::SliderFloat("Specific Heat Energy", &CreationSpecificHeatEnergy, 1, 1000, "%.4f J/(KgK)", ImGuiSliderFlags_NoInput);
 	ImGui::PopItemWidth();
 
 	//TEMP SLIDE
-	ImGui::SetCursorPos(ImVec2(0.02 * WINWIDTH, 0.94 * WINHEIGHT));
+	ImGui::SetCursorPos(ImVec2(0.02 * WINWIDTH, 0.85 * WINHEIGHT));
 	ImGui::SliderFloat("Initial Temperature", &CreationTemp, 1, 20000, "%.3f K", ImGuiSliderFlags_NoInput);
 
 	//DSC Button
