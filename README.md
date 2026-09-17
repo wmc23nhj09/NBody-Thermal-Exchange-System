@@ -18,6 +18,7 @@ This project includes blackbody radiation colour mapping to simulate how an obje
 * Spawnable objects
 * Basic UI system
 * Real time 2 way block property comparison
+* Occultation Radiation Block
 
 ## IN DEVELOPMENT FEATURES
 
