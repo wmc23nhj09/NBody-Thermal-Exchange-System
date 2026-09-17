@@ -27,7 +27,7 @@ void Property(const char* name, const char* value) {
 	ImGui::Text("%s", value);
 }
 
-void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC, bool& DSC, bool& Radiation, bool& Conduction, const int& WINHEIGHT, const int& WINWIDTH, std::vector<ThermalBlocks*> block) {
+void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& CreationTemp, float& CreationMass, float& CreationEmissivety, float& CreationSpecificHeatEnergy, float& CreationDensity, float& CreationKC, bool& DSC, bool& Radiation, bool& Conduction, bool& showShadow, const int& WINHEIGHT, const int& WINWIDTH, std::vector<ThermalBlocks*> block) {
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
@@ -48,7 +48,7 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 	//MASS SLIDER
 	ImGui::PushItemWidth(0.33 * WINWIDTH);
 	ImGui::SetCursorPos(ImVec2(0.28 * WINWIDTH, 0.67 * WINHEIGHT));
-	ImGui::SliderFloat("Mass", &CreationMass, 1, 100, "%.2f Kg", ImGuiSliderFlags_NoInput);
+	ImGui::SliderFloat("Mass", &CreationMass, 1, 100, "%.3f Kg", ImGuiSliderFlags_NoInput);
 
 	//DENSITY SLIDER
 	ImGui::PushItemWidth(0.24 * WINWIDTH);
@@ -58,7 +58,7 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 	//KC SLIDER
 	ImGui::PushItemWidth(0.33 * WINWIDTH);
 	ImGui::SetCursorPos(ImVec2(0.31 * WINWIDTH, 0.77 * WINHEIGHT));
-	ImGui::SliderFloat("Thermal Conductivity", &CreationKC, 0.001f, 1000, "%.4f W/(mK)", ImGuiSliderFlags_NoInput);
+	ImGui::SliderFloat("Thermal Conductivity", &CreationKC, 1.0f, 1000, "%.4f W/(mK)", ImGuiSliderFlags_NoInput);
 
 	//SPECIFIC HEAT ENERGY SLIDER
 	ImGui::PushItemWidth(0.64 * WINWIDTH);
@@ -83,7 +83,12 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 
 	ImGui::Checkbox("Conduction", &Conduction);
 
+	ImGui::SetCursorPos(ImVec2(0.84 * WINWIDTH, 0.46 * WINHEIGHT));
+
+	ImGui::Checkbox("Show Occultaion shadow", &showShadow);
+
 	ImGui::SetCursorPos(ImVec2(0.78 * WINWIDTH, 0.66 * WINHEIGHT));
+
 
 	if (block[0] != nullptr && ImGui::BeginTable("Properties Block 1", 2)) {
 

@@ -32,13 +32,13 @@ mouseMap(),
 dt(),
 sigma(5.67e-8),
 emissivety(1),
-transferspeedConductionMult(1000.0f),
+transferspeedConductionMult(10),
 framesbefore(),
 framesnow(),
 CreationTemp(1),
 CreationMass(1),
-CreationEmissivety(0.001f),
-CreationSpecificHeatEnergy(0.001f),
+CreationEmissivety(0.1f),
+CreationSpecificHeatEnergy(1.0f),
 CreationDensity(1),
 CreationKC(0.001f),
 Create(false),
@@ -46,8 +46,11 @@ Destroy(false),
 DSC(true),
 Radiation(true),
 Conduction(true),
+showShadow(false),
 dm(),
-SelectedBlock{ nullptr, nullptr }
+SelectedBlock{ nullptr, nullptr },
+SpecificBlockDists{},
+ConeHolder{}
 {
 };
 
@@ -108,18 +111,21 @@ void Game::run() {
 				if (!(mouse.x > 1258) && !(mouse.y > 697)) {
 
 					if (Create) {
+						bool spawnBlock = false;
 						if (blocksinuse.size() > 0) {
 							for (auto& b : blocksinuse) {
+								blockrender.getHeldState(mouse, &b);
 								if (b.interaction.held) {
 									break;
 								}
 								else {
-									SDL_FRect tempRect = { mouse.x, mouse.y, 20, 20 };
-									blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
+									spawnBlock = true; 
+									break;
 								}
 							}
 						}
-						else {
+						
+						if(spawnBlock || blocksinuse.size() == 0){
 							SDL_FRect tempRect = { mouse.x, mouse.y, 20, 20 };
 							blocksinuse.push_back(blockrender.CreateBlock(CreationTemp, tempRect, 1, CreationDensity, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationKC));
 						}
@@ -187,9 +193,9 @@ void Game::run() {
 		framesbefore = framesnow;
 
 		physicsbackground();
-		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy, dm->w, dm->h);
+		renderer.update(blocksinuse, mouse, blockrender, Create, Destroy, dm->w, dm->h, ConeHolder);
 		Ui.SetFlags(window_flags);
-		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction, dm->h, dm->w, SelectedBlock);
+		Ui.DrawUI(renderer.renderer, window_flags, CreationTemp, CreationMass, CreationEmissivety, CreationSpecificHeatEnergy, CreationDensity, CreationKC, DSC, Radiation, Conduction, showShadow, dm->h, dm->w, SelectedBlock);
 		SDL_RenderPresent(renderer.renderer);
 	}
 };
@@ -225,14 +231,47 @@ void Game::physicsbackground() {
 			blocksinuse[i].render.rect.y = 0;
 		}
 
-		for (size_t j = i + 1; j < blocksinuse.size(); j++) {
-			if (blockrender.getTouchingIndexes(blocksinuse[i], blocksinuse[j]) && Conduction) {
+		SpecificBlockDists.resize(blocksinuse.size());
+
+		for (size_t j = 0; j < blocksinuse.size(); j++) {
+
+			if (j == i) {
+				continue;
+			}
+
+
+			if (blockrender.getTouchingIndexes(blocksinuse[i], blocksinuse[j]) && Conduction && j > i) {
 				physicswork.AddConduction(blocksinuse[i], blocksinuse[j], i, j, dt, transferspeedConductionMult, tempsToadd, blockrender);
 			}
 			else if (Radiation) {
-				physicswork.AddRadiation(blocksinuse[i], blocksinuse[j], i, j, dt, sigma, tempsToadd, blockrender);
+				physicswork.AddRadiation(blocksinuse[i], blocksinuse[j], i, j, dt, sigma, tempsToadd, blockrender, SpecificBlockDists);
 			}
 		}
+
+		int index = -1;
+
+		if (SelectedBlock[0] != nullptr && showShadow) {
+			for (int i = 0; i < blocksinuse.size(); i++) {
+				if (SelectedBlock[0] == &blocksinuse[i]) {
+					index = i;				
+				}
+			}
+		}
+		else {
+			showShadow = false;
+		}
+
+		physicswork.CheckOccultation(blocksinuse, SpecificBlockDists, i, tempsToadd, ConeHolder, showShadow, index);
+
+		if (!showShadow) {
+			ConeHolder.Angle = -1;
+		}
+
+		SpecificBlockDists.clear();
+	}
+
+	if (blocksinuse.size() == 0) {
+		ConeHolder.Angle = -1;
 	}
 
 	for (size_t i = 0; i < tempsToadd.size(); i++) {

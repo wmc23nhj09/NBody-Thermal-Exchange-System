@@ -45,6 +45,9 @@ private:
 	bool DSC;
 	bool Radiation;
 	bool Conduction;
+	bool showShadow;
 	const SDL_DisplayMode* dm;
 	std::vector<ThermalBlocks*> SelectedBlock;
+	std::vector<double> SpecificBlockDists;
+	Cone ConeHolder;
 };

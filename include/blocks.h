@@ -36,10 +36,18 @@ struct InteractionState {
 	bool clicked;
 };
 
+struct AngleState {
+	double Angle;
+	double AngleRadius;
+	double interval[2];
+
+};
+
 struct ThermalBlocks {
 	PhysicsState physics;
 	RenderingState render;
 	InteractionState interaction;
+	AngleState angle;
 };
 
 class BlockManager {

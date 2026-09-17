@@ -1,9 +1,10 @@
-#include "physics.h"
+#include <physics.h>
+#include <renderer.h>
 #include <SDL3/SDL.h>
-#include "vector"
+#include <vector>
 #include <cmath>
-#include "iostream"
-#include "algorithm"
+#include <algorithm>
+#include <numbers>
 
 void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, double dt, double sigma, double emissivety) {
 	for (auto ba = blocks->begin(); ba != blocks->end(); ++ba) {
@@ -20,7 +21,7 @@ void Physics::DeepSpaceHeatTransfer(std::vector<ThermalBlocks>* blocks, double d
 }
 
 void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, double dt, float transferspeed, std::vector<double>& tempsToadd, BlockManager& blockUser) {
-	
+
 	float TempDif = blockUser.GetTempDif(BlockA.physics.temp, BlockB.physics.temp);
 
 	float k = (BlockA.physics.kC + BlockB.physics.kC)/2;
@@ -42,16 +43,17 @@ void Physics::AddConduction(const ThermalBlocks& BlockA, const ThermalBlocks& Bl
 	}
 }
 
-void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, double dt, double sigma, std::vector<double>& tempsToadd, BlockManager& blockUser) {
+void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& BlockB, size_t& ba, size_t& bb, double dt, double sigma, std::vector<double>& tempsToadd, BlockManager& blockUser, std::vector<double>& SpecificBlockDists) {
 	float EFF = sqrt(BlockA.physics.A * BlockB.physics.A);
 
 	float distanceSquared = pow(BlockA.render.rect.x - BlockB.render.rect.x, 2) + pow(BlockA.render.rect.y - BlockB.render.rect.y, 2);
+	SpecificBlockDists[bb] = (distanceSquared);
+
 	float radiationCoefficient = sigma * BlockA.physics.emissivety *
 		BlockB.physics.emissivety *
 		EFF *
 		(pow(BlockA.physics.temp, 4) - pow(BlockB.physics.temp, 4));
 
-	//radiationCoefficient = abs(radiationCoefficient);
 
 	if (distanceSquared < 1.0f){
 		distanceSquared = 1.0f;
@@ -69,6 +71,121 @@ void Physics::AddRadiation(const ThermalBlocks& BlockA, const ThermalBlocks& Blo
 	else {
 		tempsToadd[ba] += Q / (BlockA.physics.mass * BlockA.physics.specific_heat_energy);
 		tempsToadd[bb] -= Q / (BlockB.physics.mass * BlockB.physics.specific_heat_energy);
+	}
+}
+
+void Physics::CheckOccultation(std::vector<ThermalBlocks>& Blocks, std::vector<double>& BlockDists, int i, std::vector<double>& tempsToadd, Cone& ConeHolder, bool& showShadow, int index) {
+	bool Occulted = false;
+	for (int j = 0; j < Blocks.size(); j++) {
+		if (j == i) {
+			continue;
+		}
+		
+		for (int k = 0; k < Blocks.size(); k++) {
+		
+			if (k == j || k == i) {
+				continue;
+			}
+
+
+
+			double BLOCK_I_CENTER[2] = { Blocks[i].render.rect.x + Blocks[i].render.rect.w / 2, Blocks[i].render.rect.y + Blocks[i].render.rect.h / 2 };
+			double BLOCK_J_CENTER[2] = { Blocks[j].render.rect.x + Blocks[j].render.rect.w / 2, Blocks[j].render.rect.y + Blocks[j].render.rect.h / 2};
+			double BLOCK_K_CENTER[2] = { Blocks[k].render.rect.x + Blocks[k].render.rect.w / 2, Blocks[k].render.rect.y + Blocks[k].render.rect.h / 2 };
+			
+
+			double dist_IJ = sqrt(BlockDists[j]);
+			double dist_IK = std::hypot(BLOCK_K_CENTER[0] - BLOCK_I_CENTER[0],BLOCK_K_CENTER[1] - BLOCK_I_CENTER[1]);
+
+			if (dist_IK >= dist_IJ || dist_IK == 0.0f) {
+				continue;
+			}
+
+			double angle_IJ = atan2(BLOCK_J_CENTER[1] - BLOCK_I_CENTER[1], BLOCK_J_CENTER[0] - BLOCK_I_CENTER[0]) + std::numbers::pi;
+			double angle_IK = atan2(BLOCK_K_CENTER[1] - BLOCK_I_CENTER[1], BLOCK_K_CENTER[0] - BLOCK_I_CENTER[0]) + std::numbers::pi;
+
+			double angleRadius_J = asin(0.5 * Blocks[j].render.rect.w / dist_IJ);
+			double angleRadius_K = asin(0.5 * Blocks[k].render.rect.w / dist_IK);
+
+			Blocks[j].angle.interval[0] = angle_IJ - angleRadius_J;
+			Blocks[j].angle.interval[1] = angle_IJ + angleRadius_J;
+
+			double KLeft = angle_IK - angleRadius_K;
+			double KRight = angle_IK + angleRadius_K;
+
+
+			double overlapStart = std::max(Blocks[j].angle.interval[0], KLeft);
+			double overlapEnd = std::min(Blocks[j].angle.interval[1], KRight);
+
+			double BlockedFraction = 0;
+
+			double overlapWidth = 0;
+
+			if (overlapEnd >= overlapStart) {
+				overlapWidth = overlapEnd - overlapStart;
+			}
+			else {
+				continue;
+			}
+
+			double recieverWidth = abs(Blocks[j].angle.interval[1] - Blocks[j].angle.interval[0]);
+
+			BlockedFraction = overlapWidth / recieverWidth;
+
+			double VisibleFraction = 1 - BlockedFraction;
+
+
+			tempsToadd[j] *= VisibleFraction;
+			Occulted = true;
+
+			if (showShadow && i == index) {
+
+				double iCentreX = Blocks[i].render.rect.x + Blocks[i].render.rect.w / 2.0;
+				double iCentreY = Blocks[i].render.rect.y + Blocks[i].render.rect.h / 2.0;
+
+				double kCentreX = Blocks[k].render.rect.x + Blocks[k].render.rect.w / 2.0;
+				double kCentreY = Blocks[k].render.rect.y + Blocks[k].render.rect.h / 2.0;
+
+				double angleToK = atan2(
+					kCentreY - iCentreY,
+					kCentreX - iCentreX
+				);
+
+				double theta = angleToK;
+
+
+				double dx = cos(theta);
+				double dy = sin(theta);
+
+				double halfW = Blocks[k].render.rect.w / 2.0;
+				double halfH = Blocks[k].render.rect.h / 2.0;
+
+				double tx = halfW / abs(dx);
+				double ty = halfH / abs(dy);
+
+				double t = std::min(tx, ty);
+
+				double point2X = kCentreX - dx * t;
+				double point2Y = kCentreY - dy * t;
+
+				double px = -dy;
+				double py = dx;
+
+				ConeHolder.Angle = theta;
+
+				double halfWidth = Blocks[k].render.rect.w / 2.0;
+
+				ConeHolder.Lx = kCentreX - px * halfWidth;
+				ConeHolder.Ly = kCentreY - py * halfWidth;
+
+				ConeHolder.Rx = kCentreX + px * halfWidth;
+				ConeHolder.Ry = kCentreY + py * halfWidth;
+			}
+		}
+
+	}
+	if (!Occulted) {
+		ConeHolder.Angle = -1;
 	}
 }
 

@@ -14,7 +14,7 @@ double BlockManager::GetTempDif(double Tempa, double Tempb) {
 
 //Create a block - MUST FIX
 ThermalBlocks BlockManager::CreateBlock(double temp, SDL_FRect& rect, double A, double d, double mass, double emissivety, double specific_heat_energy, double k) {
-	ThermalBlocks block = { {temp, A, d, mass, emissivety, specific_heat_energy, 0, k}, { rect, {0, 0, 0}}, {false, false, false} };
+	ThermalBlocks block = { {temp, A, d, mass, emissivety, specific_heat_energy, 0, k}, { rect, {0, 0, 0}}, {false, false, false}, {0.0f, 0.0f, {}}};
 	return block;
 }
 
