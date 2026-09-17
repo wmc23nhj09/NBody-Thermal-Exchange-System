@@ -102,7 +102,6 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 		Property("Area: ", std::to_string(block[0]->physics.A).c_str());
 		Property("Density: ", std::to_string(block[0]->physics.d).c_str());
 		Property("Thermal Conductivity: ", std::to_string(block[0]->physics.kC).c_str());
-		//ImGui::Text(("Cooling Constant: " + std::to_string(block->physics.k)).c_str());
 		ImGui::EndTable();
 	}
 
@@ -119,7 +118,6 @@ void UI::DrawUI(SDL_Renderer* renderer, ImGuiWindowFlags window_flags, float& Cr
 		Property("Area: ", std::to_string(block[1]->physics.A).c_str());
 		Property("Density: ", std::to_string(block[1]->physics.d).c_str());
 		Property("Thermal Conductivity: ", std::to_string(block[1]->physics.kC).c_str());
-		//ImGui::Text(("Cooling Constant: " + std::to_string(block->physics.k)).c_str());
 		ImGui::EndTable();
 	}
 	// ---------- REAL UI END ----------
