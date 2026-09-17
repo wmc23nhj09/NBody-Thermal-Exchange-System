@@ -1,6 +1,5 @@
 #include <physics.h>
 #include <renderer.h>
-#include <SDL3/SDL.h>
 #include <vector>
 #include <cmath>
 #include <algorithm>
