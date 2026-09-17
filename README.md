@@ -1,127 +1,67 @@
-# NBody Thermal Exchange System
+# NBody-Thermal-Exchange-System
 
-A C++ simulation of thermal exchange between multiple bodies, including radiation, conduction, and temperature-based visualisation.
+A program written in C++ using SDL3 that shows the laws of thermodynamics, showing exchange between objects via conduction and radiation. 
 
-This started as me wanting to see if I could actually build a thermal simulation from scratch. It ended up becoming a much bigger project than I originally expected.
+## OVERVIEW
 
-## What does it do?
+This project simulates how objects in deep space radiate their heat to space and other objects via conduction when touching and radiation when apart.
+This project includes blackbody radiation colour mapping to simulate how an object would look at specific temperatures.
 
-The simulation models multiple objects which can exchange thermal energy through:
+## CURRENT FEATURES
 
-* Blackbody radiation
-* Radiative thermal exchange between objects
-* Conduction when objects are touching
-* Cooling to deep space
-* Energy conservation during radiative exchange
-* Radiation blocking / occultation
+* Blackbody radiation colour mapping
+* Temperature loss to deep space using Stefan-Boltzmann's law
+* Temperature Equilibrium between objects at a distance due to radiation
+* Obey Conservation of energy at a distance
+* Draggable objects
+* Changeable mass and physics states of objects
+* Spawnable objects
+* Basic UI system
+* Real time 2 way block property comparison
+* Occultation Radiation Block
 
-Objects also change colour based on their temperature, allowing the thermal state of the simulation to be seen directly.
+## IN DEVELOPMENT FEATURES
 
-The simulation can be interacted with in real time. Objects can be dragged around, spawned, and have their physical properties changed while the simulation is running.
+* None As Of Now
 
-## Physics
+## FUTURE FEATURES
 
-### Blackbody Radiation
+* Barnes-Hutt Algorithm
+* etc.
 
-Objects radiate energy according to the Stefan-Boltzmann law:
+## TEST VALIDATIONS
+### ADDED
+* Stefan-Boltzmann Single Step Deep Space Cooling
+  >**NOTE:** As temperature increases, the margin of error increases due to the non-linear `(T^4)` relationship in Stefan-Boltzmann radiation. This test allows up to 1% error for single-step calculations. A future multi-step simulation stability test will verify accuracy using smaller timesteps and improve high-temperature accuracy.
 
-```text
-P = εσAT⁴
-```
+* Energy Conservation of objects finding Equilibrium
+  >**NOTE:** Energy conservation managed to achieve a temperature different of 7.5 parts per million during tests (0.000075%)! 
 
-This is used both for radiation into deep space and for calculating thermal exchange between objects.
+### TO ADD
+* Multi-step simulation stability
+* Blackbody radiation -> RGB colour mapping validation
+* etc.
 
-### Thermal Exchange
+## REQUIREMENTS
 
-Two objects at different temperatures exchange radiation. The net exchange depends on their temperatures, surface areas, emissivities, and geometry.
+* SDL3
+* Visual Studio 2022+
+* C++ 17 or newer
 
-The simulation also accounts for objects blocking radiation between other objects.
+## BUILD
 
-### Conduction
+1. Create a new C++ project in Visual Studio 2022 (or newer).
+2. Download or clone the [SDL3 Development Kit](https://github.com/wmc23nhj09/SDL3_Development_Kit).
+3. Configure the project's Additional Include Directories, Library Directories, and Linker Dependencies using the paths provided by the SDL3 Development Kit.
+4. Configure the projects Additional Include Directories to the `Third Party` Folder, then include.
+5. In Visual Studio, add the `Third Party` source code to src.
+6. Copy SDL3.dll into the executable output directory (or build first, then place the DLL beside the executable).
+7. Build and run the project.
+   
+>**Note:** The SDL3 Development Kit is designed to be reused across multiple SDL3 projects. The project configuration should only require updating the SDL3 paths to match the user's local installation. This repository assumes basic knowledge of Visual Studio C++ project configuration. Users should configure their project include paths and linker settings to point to this development kit.
 
-When objects come into contact, thermal conduction is applied between them.
+>**Contingency:** All of this project's own header files are already configured for the ease of building, only the [SDL3 Development Kit](https://github.com/wmc23nhj09/SDL3_Development_Kit)'s files need to be configured (Step 3). If the project's own header files are not able to be found, either add them to the project's local `src` file, or link your relative path under both projects Additional Include Directories configuration settings.
 
-### Energy Conservation
+## KNOWN LIMITATIONS
 
-One of the main goals of the project was to make sure that thermal energy wasn't simply appearing or disappearing during radiative exchange.
-
-I created tests to compare the energy and temperature state before and after systems reach equilibrium.
-
-Under the conditions tested, the equilibrium temperature differed by approximately **7.5 ppm (0.000075%)**.
-
-This is a numerical simulation, so conservation is measured within a tolerance rather than assumed to be exact.
-
-## Visualisation
-
-The simulation uses SDL3 for rendering and interaction.
-
-SDL3 is part of the visualisation and UI side of the project rather than the physics itself. The simulation logic can therefore be tested independently of the graphical interface.
-
-Temperature is represented visually using colour, making it possible to see heat moving through the system without having to inspect numerical values constantly.
-
-## Project Structure
-
-The project is roughly split into:
-
-* `src/` - implementation
-* `include/` - headers
-* `tests/` - physics and validation tests
-* `third_party/` - external dependencies
-
-The simulation and rendering code are kept separate where possible.
-
-This project was also where I was learning how to structure a larger C++ program, so the architecture isn't perfect. There are definitely things I would structure differently if I started again.
-
-## Testing
-
-The physics has been tested against several expected behaviours, including:
-
-* Stefan-Boltzmann cooling
-* Thermal equilibrium
-* Energy conservation during radiative exchange
-* Temperature changes caused by thermal interaction
-* Radiation blocking
-
-The tests are intended to validate the physics rather than just checking whether the program runs.
-
-## Current State
-
-### IN DEVELOPMENT FEATURES
-
-**None as of now.**
-
-The core feature set I originally wanted to build is complete.
-
-This doesn't mean the simulation is "finished" forever. There are plenty of things I'd still like to experiment with, but the original project is now at the point where I'm happy to call it complete.
-
-## Future Ideas
-
-### Barnes-Hut
-
-The current implementation can become expensive as the number of bodies increases because interactions have to be calculated between bodies.
-
-A Barnes-Hut implementation could reduce the number of calculations required and allow significantly larger simulations.
-
-This is currently a future optimisation rather than part of the core project.
-
-Other possible future work includes improving numerical accuracy, performance profiling, and further separating/refactoring parts of the architecture.
-
-## Why I Made This
-
-This project started mostly because I wanted to know whether I could make a simulation like this myself.
-
-The actual development took roughly a month, but the idea had been sitting around for much longer. There was a lot of thinking, stopping, coming back to it, changing how I thought the physics should work, and then finally actually building the thing.
-
-The project ended up teaching me quite a lot about:
-
-* C++
-* numerical simulation
-* thermal physics
-* energy conservation
-* testing physical systems
-* performance considerations
-* and, perhaps most importantly, how to structure a project once it gets too big to comfortably keep everything in your head.
-
-It works.
-
-That's the important bit.
+* None As Of Now
